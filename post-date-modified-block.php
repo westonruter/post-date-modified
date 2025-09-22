@@ -20,6 +20,7 @@ use WP_HTML_Text_Replacement;
  *     "blockName": non-empty-string,
  *     "attrs"?: array{
  *         "displayType"?: "modified",
+ *         "format"?: non-empty-string,
  *         "metadata"?: array{
  *             "bindings"?: array{
  *                 "datetime"?: array{
@@ -40,9 +41,8 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		$block_content = '';
 	}
 
-//	return '<pre>' . var_export($block, true) . '</pre>';
-
-	// Abort if the block is empty or the necessary context and block binding are absent.
+	// Abort if the block is empty, the necessary context and block binding are absent, or it's not for a Date block.
+	// TODO: Allow for back-compat without block bindings?
 	if (
 		'' === $block_content ||
 		! isset( $instance->context['postId'] ) ||
@@ -53,12 +53,11 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		return $block_content;
 	}
 
-	// Abort if this block is not for the Publish Date (e.g. it's for the Modified Date).
+	// Abort if the block binding source is not available.
 	$source = get_block_bindings_source( $block['attrs']['metadata']['bindings']['datetime']['source'] );
-//	$source_args = $block['attrs']['metadata']['bindings']['datetime']['args'];
-//	if ( ! isset( $source_args['key'] ) || 'date' !== $source_args['key'] ) {
-//		return $block_content;
-//	}
+	if ( null === $source ) {
+		return $block_content;
+	}
 
 	$modified_source_args = array_merge(
 		$block['attrs']['metadata']['bindings']['datetime']['args'],
@@ -67,6 +66,7 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 	$modified_datetime  = $source->get_value( $modified_source_args, $instance, 'datetime' );
 	$modified_timestamp = strtotime( $modified_datetime );
 
+	// TODO: Use the Date's binding source value instead of looking at the post ID? But would this allow for it to be backwards-compatible??
 	$post_ID = $instance->context['postId'];
 
 	// Skip appending the modified date if it is the same as the published date.
@@ -86,19 +86,13 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		$formatted_date = wp_date( $format, $modified_timestamp );
 	}
 
-	// TODO: The "modified" text should come from the editor and/or be translatable.
-	// TODO: Injecting the markup should be handled better, with the HTML API.
-
-
 	$processor = new class( $block_content ) extends WP_HTML_Tag_Processor {
 		public function append_html( string $html ): bool {
 			if ( ! $this->has_bookmark( 'last_closing_tag' ) ) {
 				return false;
 			}
-			$start = $this->bookmarks['last_closing_tag']->start;
-
 			$this->lexical_updates[] = new WP_HTML_Text_Replacement(
-				$start,
+				$this->bookmarks['last_closing_tag']->start,
 				0,
 				$html
 			);
@@ -119,6 +113,7 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 	// See Microformat classes used at <https://github.com/WordPress/wordpress-develop/blob/ebd415b045a2b1bbeb4d227e890c78a15ff8d85e/src/wp-content/themes/twentynineteen/inc/template-tags.php#L17>.
 	$html = sprintf(
 		' (%s <time class="updated" datetime="%s">%s</time>)',
+		// TODO: The "modified" text should come from the editor.
 		esc_html__( 'Modified:', 'post-date-modified-block' ),
 		esc_attr( wp_date( 'c', $modified_timestamp ) ),
 		esc_html( $formatted_date )
@@ -126,11 +121,7 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 
 	$processor->append_html( $html );
 
-	//$block_content = str_replace( '</div>', ' (Modified: ' . $formatted_date . ')</div>', $block_content );
-	$block_content = $processor->get_updated_html();
-
-
-	return $block_content;
+	return $processor->get_updated_html();
 }
 
 add_filter(
