@@ -112,7 +112,7 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 
 	// See Microformat classes used at <https://github.com/WordPress/wordpress-develop/blob/ebd415b045a2b1bbeb4d227e890c78a15ff8d85e/src/wp-content/themes/twentynineteen/inc/template-tags.php#L17>.
 	$html = sprintf(
-		' (%s <time class="updated" datetime="%s">%s</time>)',
+		' <span class="modified">(%s <time class="updated" datetime="%s">%s</time>)</span>',
 		// TODO: The "modified" text should come from the editor.
 		esc_html__( 'Modified:', 'post-date-modified-block' ),
 		esc_attr( wp_date( 'c', $modified_timestamp ) ),
