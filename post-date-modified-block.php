@@ -11,10 +11,10 @@ use WP_HTML_Tag_Processor;
 use WP_HTML_Text_Replacement;
 
 /**
- * Filters the content of a single block.
+ * Filters the content of a single block Date block to add the Modified date as well if it is different.
  *
- * @since 5.0.0
- * @since 5.9.0 The `$instance` parameter was added.
+ * This is not backwards-compatible with the Post Date block prior to block bindings. It is also only supports the
+ * 'field' arg, as opposed to the 'key' arg previously implemented in Gutenberg.
  *
  * @phpstan-param array{
  *     "blockName": non-empty-string,
@@ -25,7 +25,9 @@ use WP_HTML_Text_Replacement;
  *             "bindings"?: array{
  *                 "datetime"?: array{
  *                      "source": non-empty-string,
- *                      "args": array
+ *                      "args": array{
+ *                          "field"?: string
+ *                      }
  *                 }
  *             }
  *         }
@@ -41,11 +43,9 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		$block_content = '';
 	}
 
-	// Abort if the block is empty, the necessary context and block binding are absent, or it's not for a Date block.
-	// TODO: Allow for back-compat without block bindings?
+	// Abort if the block is empty or if it doesn't have a Date block binding.
 	if (
 		'' === $block_content ||
-		! isset( $instance->context['postId'] ) ||
 		! isset(
 			$block['attrs']['metadata']['bindings']['datetime']['source'],
 			$block['attrs']['metadata']['bindings']['datetime']['args']['field']
