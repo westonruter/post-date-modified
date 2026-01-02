@@ -46,9 +46,12 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 	if (
 		'' === $block_content ||
 		! isset( $instance->context['postId'] ) ||
-		! isset( $block['attrs']['metadata']['bindings']['datetime']['source'], $block['attrs']['metadata']['bindings']['datetime']['args']['key'] ) ||
+		! isset(
+			$block['attrs']['metadata']['bindings']['datetime']['source'],
+			$block['attrs']['metadata']['bindings']['datetime']['args']['field']
+		) ||
 		'core/post-data' !== $block['attrs']['metadata']['bindings']['datetime']['source'] ||
-		'date' !== $block['attrs']['metadata']['bindings']['datetime']['args']['key']
+		'date' !== $block['attrs']['metadata']['bindings']['datetime']['args']['field']
 	) {
 		return $block_content;
 	}
@@ -59,19 +62,27 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		return $block_content;
 	}
 
+	// Get the published date.
+	$published_datetime = $source->get_value( $block['attrs']['metadata']['bindings']['datetime']['args'], $instance, 'datetime' );
+	if ( ! $published_datetime ) {
+		return $block_content;
+	}
+	$published_timestamp = strtotime( $published_datetime );
+
+	// Get the modified date.
 	$modified_source_args = array_merge(
 		$block['attrs']['metadata']['bindings']['datetime']['args'],
-		array( 'key' => 'modified' )
+		array( 'field' => 'modified' )
 	);
-	$modified_datetime  = $source->get_value( $modified_source_args, $instance, 'datetime' );
+	$modified_datetime = $source->get_value( $modified_source_args, $instance, 'datetime' );
+	if ( ! $modified_datetime ) {
+		return $block_content;
+	}
 	$modified_timestamp = strtotime( $modified_datetime );
 
-	// TODO: Use the Date's binding source value instead of looking at the post ID? But would this allow for it to be backwards-compatible??
-	$post_ID = $instance->context['postId'];
-
-	// Skip appending the modified date if it is the same as the published date.
+	// Skip appending the modified date if it would be displayed the same as the published date.
 	$modified_threshold_format = 'Ymd';
-	if ( get_the_modified_date( $modified_threshold_format, $post_ID ) === get_the_date( $modified_threshold_format, $post_ID ) ) {
+	if ( wp_date( $modified_threshold_format, $published_timestamp ) === wp_date( $modified_threshold_format, $modified_timestamp ) ) {
 		return $block_content;
 	}
 
