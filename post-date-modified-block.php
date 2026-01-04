@@ -48,6 +48,7 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 
 	$date_format = $block['attrs']['format'] ?? get_option( 'date_format' );
 
+	// Short-circuit if not the right context.
 	if (
 		// Nothing is being displayed.
 		'' === $block_content
@@ -61,10 +62,12 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		// Pass through Date block from 6.9 if it isn't for displaying the published date.
 		(
 			// This indicates the block is from 6.9.
-			isset( $block['attrs']['datetime'] ) &&
+			isset( $block['attrs']['datetime'] )
+			&&
 			// Look at bindings to see if connected to published date.
 			(
-				'core/post-data' !== ( $block['attrs']['metadata']['bindings']['datetime']['source'] ?? null ) ||
+				'core/post-data' !== ( $block['attrs']['metadata']['bindings']['datetime']['source'] ?? null )
+				||
 				'date' !== (
 					$block['attrs']['metadata']['bindings']['datetime']['args']['field'] ??
 					$block['attrs']['metadata']['bindings']['datetime']['args']['key'] ??
