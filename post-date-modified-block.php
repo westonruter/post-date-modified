@@ -78,19 +78,28 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 
 	// Get the published date.
 	$published_datetime = $source->get_value( array( 'field' => 'date' ), $instance, 'datetime' );
-	if ( ! $published_datetime ) {
+	if ( ! is_string( $published_datetime ) || '' === $published_datetime ) {
 		return $block_content;
 	}
 	$published_timestamp = strtotime( $published_datetime );
+	if ( false === $published_timestamp || $published_timestamp < 1 ) {
+		return $block_content;
+	}
 
 	// Get the modified date.
 	$modified_datetime = $source->get_value( array( 'field' => 'modified' ), $instance, 'datetime' );
-	if ( ! $modified_datetime ) {
+	if ( ! is_string( $modified_datetime ) || '' === $modified_datetime ) {
 		return $block_content;
 	}
 	$modified_timestamp = strtotime( $modified_datetime );
+	if ( false === $modified_timestamp || $modified_timestamp < 1 ) {
+		return $block_content;
+	}
 
 	$date_format = $block['attrs']['format'] ?? get_option( 'date_format' );
+	if ( ! is_string( $date_format ) || '' === $date_format ) {
+		return $block_content;
+	}
 
 	// Skip appending the modified date if it would be displayed the same as the published date.
 	$published_date_formatted = format_date( $published_timestamp, $date_format );
@@ -115,7 +124,7 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 	while ( $processor->next_tag( array( 'tag_closers' => 'visit' ) ) ) {
 		if ( $processor->is_tag_closer() ) {
 			$processor->set_bookmark( 'last_closing_tag' );
-		} else if ( 'TIME' === $processor->get_tag() ) {
+		} elseif ( 'TIME' === $processor->get_tag() ) {
 			// Microformat classes used at <https://github.com/WordPress/wordpress-develop/blob/ebd415b045a2b1bbeb4d227e890c78a15ff8d85e/src/wp-content/themes/twentynineteen/inc/template-tags.php#L15-L18>.
 			$processor->add_class( 'entry-date' );
 			$processor->add_class( 'published' );
@@ -128,7 +137,7 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		' <span class="modified">(%s <time class="updated" datetime="%s">%s</time>)</span>',
 		// TODO: The "modified" text should come from the editor.
 		esc_html__( 'Modified:', 'post-date-modified-block' ),
-		esc_attr( wp_date( 'c', $modified_timestamp ) ),
+		esc_attr( (string) wp_date( 'c', $modified_timestamp ) ),
 		esc_html( $modified_date_formatted )
 	);
 
@@ -149,7 +158,7 @@ add_filter(
  *
  * @param positive-int     $timestamp Timestamp.
  * @param non-empty-string $format    Date format.
- * @return non-empty-string Formatted date.
+ * @return string Formatted date (and will be non-empty-string).
  */
 function format_date( int $timestamp, string $format ): string {
 	if ( 'human-diff' === $format ) {
@@ -159,6 +168,6 @@ function format_date( int $timestamp, string $format ): string {
 			human_time_diff( $timestamp )
 		);
 	} else {
-		return wp_date( $format, $timestamp );
+		return (string) wp_date( $format, $timestamp );
 	}
 };
