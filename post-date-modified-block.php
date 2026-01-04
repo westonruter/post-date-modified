@@ -96,8 +96,8 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 	}
 
 	if ( isset( $block['attrs']['format'] ) && 'human-diff' === $block['attrs']['format'] ) {
-		// translators: %s: human-readable time difference.
 		$formatted_date = sprintf(
+			/* translators: %s: human-readable time difference. */
 			__( '%s ago', 'default' ),
 			human_time_diff( $modified_timestamp )
 		);
