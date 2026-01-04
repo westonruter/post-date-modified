@@ -32,6 +32,7 @@ const VERSION = '1.0.0';
  *         "displayType"?: "modified",
  *         "format"?: non-empty-string,
  *         "datetime"?: non-empty-string,
+ *         "showModifiedDateWhenDifferent"?: bool,
  *         "modifiedDateTemplate"?: string,
  *         "modifiedDateOnSeparateLine"?: bool,
  *         "publishDatePrefix"?: string,
@@ -69,6 +70,8 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		||
 		// Pass through Date block from 6.8 which has the "Display last modified date" setting enabled.
 		( 'modified' === ( $block['attrs']['displayType'] ?? null ) )
+		||
+		false === ( $block['attrs']['showModifiedDateWhenDifferent'] ?? true )
 		||
 		// Pass through Date block from 6.9 if it isn't for displaying the published date.
 		(
@@ -111,8 +114,9 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 	}
 
 	// Obtain the template for rendering the modified date.
+	$time_placeholder       = '%%date%%';
 	$modified_date_template = $block['attrs']['modifiedDateTemplate'] ?? null;
-	if ( ! is_string( $modified_date_template ) || ! str_contains( $modified_date_template, '%s' ) ) {
+	if ( ! is_string( $modified_date_template ) || ! str_contains( $modified_date_template, $time_placeholder ) ) {
 		$modified_date_template = get_default_modified_date_template();
 	}
 
@@ -125,7 +129,7 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 	}
 	$html .= '<span class="modified">';
 	$html .= str_replace(
-		'%s',
+		$time_placeholder,
 		// See Microformat classes used at <https://github.com/WordPress/wordpress-develop/blob/ebd415b045a2b1bbeb4d227e890c78a15ff8d85e/src/wp-content/themes/twentynineteen/inc/template-tags.php#L17>.
 		sprintf(
 			'<time class="updated" datetime="%s">%s</time>',
