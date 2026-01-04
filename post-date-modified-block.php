@@ -89,21 +89,13 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 	}
 	$modified_timestamp = strtotime( $modified_datetime );
 
-	// Skip appending the modified date if it would be displayed the same as the published date.
-	$modified_threshold_format = 'Ymd';
-	if ( wp_date( $modified_threshold_format, $published_timestamp ) === wp_date( $modified_threshold_format, $modified_timestamp ) ) {
-		return $block_content;
-	}
+	$date_format = $block['attrs']['format'] ?? get_option( 'date_format' );
 
-	$format = $block['attrs']['format'] ?? get_option( 'date_format' );
-	if ( 'human-diff' === $format ) {
-		$formatted_date = sprintf(
-			/* translators: %s: human-readable time difference. */
-			__( '%s ago', 'default' ),
-			human_time_diff( $modified_timestamp )
-		);
-	} else {
-		$formatted_date = wp_date( $format, $modified_timestamp );
+	// Skip appending the modified date if it would be displayed the same as the published date.
+	$published_date_formatted = format_date( $published_timestamp, $date_format );
+	$modified_date_formatted  = format_date( $modified_timestamp, $date_format );
+	if ( $published_date_formatted === $modified_date_formatted ) {
+		return $block_content;
 	}
 
 	$processor = new class( $block_content ) extends WP_HTML_Tag_Processor {
@@ -136,7 +128,7 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		// TODO: The "modified" text should come from the editor.
 		esc_html__( 'Modified:', 'post-date-modified-block' ),
 		esc_attr( wp_date( 'c', $modified_timestamp ) ),
-		esc_html( $formatted_date )
+		esc_html( $modified_date_formatted )
 	);
 
 	$processor->append_html( $html );
@@ -150,3 +142,22 @@ add_filter(
 	10,
 	3
 );
+
+/**
+ * Formats date.
+ *
+ * @param positive-int     $timestamp Timestamp.
+ * @param non-empty-string $format    Date format.
+ * @return non-empty-string Formatted date.
+ */
+function format_date( int $timestamp, string $format ): string {
+	if ( 'human-diff' === $format ) {
+		return sprintf(
+			/* translators: %s: human-readable time difference. */
+			__( '%s ago', 'default' ),
+			human_time_diff( $timestamp )
+		);
+	} else {
+		return wp_date( $format, $timestamp );
+	}
+};
