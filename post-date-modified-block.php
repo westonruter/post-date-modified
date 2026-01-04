@@ -45,12 +45,10 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		$block_content = '';
 	}
 
-	// Short-circuit if nothing is being displayed.
-	if (  '' === $block_content ) {
-		return $block_content;
-	}
-
 	if (
+		// Short-circuit if nothing is being displayed.
+		'' === $block_content
+		||
 		// Pass through Date block from 6.8 which has the "Display last modified date" setting enabled.
 		( isset( $block['attrs']['displayType'] ) && 'modified' === $block['attrs']['displayType'] )
 		||
