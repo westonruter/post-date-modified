@@ -170,4 +170,4 @@ function format_date( int $timestamp, string $format ): string {
 	} else {
 		return (string) wp_date( $format, $timestamp );
 	}
-};
+}
