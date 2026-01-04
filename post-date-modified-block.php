@@ -95,14 +95,14 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		return $block_content;
 	}
 
-	if ( isset( $block['attrs']['format'] ) && 'human-diff' === $block['attrs']['format'] ) {
+	$format = $block['attrs']['format'] ?? get_option( 'date_format' );
+	if ( 'human-diff' === $format ) {
 		$formatted_date = sprintf(
 			/* translators: %s: human-readable time difference. */
 			__( '%s ago', 'default' ),
 			human_time_diff( $modified_timestamp )
 		);
 	} else {
-		$format         = empty( $block['attrs']['format'] ) ? get_option( 'date_format' ) : $block['attrs']['format'];
 		$formatted_date = wp_date( $format, $modified_timestamp );
 	}
 
