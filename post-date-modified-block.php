@@ -241,8 +241,11 @@ function enqueue_editor_assets(): void {
  * @return string String format for rendering the modified date.
  */
 function get_default_modified_date_template(): string {
-	/* translators: %s is a <time> element. */
-	return __( '(Modified: %s)', 'post-date-modified-block' );
+	/* translators: %s is a %%date%% element. */
+	return sprintf(
+		__( '(Modified: %s)', 'post-date-modified-block' ),
+		'%%date%%'
+	);
 }
 
 /**
