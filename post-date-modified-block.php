@@ -23,6 +23,7 @@ use WP_HTML_Text_Replacement;
  *     "attrs"?: array{
  *         "displayType"?: "modified",
  *         "format"?: non-empty-string,
+ *         "datetime"?: non-empty-string,
  *         "metadata"?: array{
  *             "bindings"?: array{
  *                 "datetime"?: array{
