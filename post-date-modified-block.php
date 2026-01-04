@@ -2,6 +2,8 @@
 /**
  * Plugin Name: Post Date + Modified Block
  * Description: This depends on Gutenberg??
+ * Requires at least: 6.9
+ * Requires PHP: 7.2
  */
 
 namespace PostDateModifiedBlock;
@@ -43,38 +45,47 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		$block_content = '';
 	}
 
-	// Abort if the block is empty or if it doesn't have a Date block binding.
+	// Short-circuit if nothing is being displayed.
+	if (  '' === $block_content ) {
+		return $block_content;
+	}
+
 	if (
-		'' === $block_content ||
-		! isset(
-			$block['attrs']['metadata']['bindings']['datetime']['source'],
-			$block['attrs']['metadata']['bindings']['datetime']['args']['field']
-		) ||
-		'core/post-data' !== $block['attrs']['metadata']['bindings']['datetime']['source'] ||
-		'date' !== $block['attrs']['metadata']['bindings']['datetime']['args']['field']
+		// Pass through Date block from 6.8 which has the "Display last modified date" setting enabled.
+		( isset( $block['attrs']['displayType'] ) && 'modified' === $block['attrs']['displayType'] )
+		||
+		// Pass through Date block from 6.9 if it isn't for displaying the published date.
+		(
+			// This indicates the block is from 6.9.
+			isset( $block['attrs']['datetime'] ) &&
+			(
+				! isset(
+					$block['attrs']['metadata']['bindings']['datetime']['source'],
+					$block['attrs']['metadata']['bindings']['datetime']['args']['field']
+				) ||
+				'core/post-data' !== $block['attrs']['metadata']['bindings']['datetime']['source'] ||
+				'date' !== $block['attrs']['metadata']['bindings']['datetime']['args']['field']
+			)
+		)
 	) {
 		return $block_content;
 	}
 
 	// Abort if the block binding source is not available.
-	$source = get_block_bindings_source( $block['attrs']['metadata']['bindings']['datetime']['source'] );
+	$source = get_block_bindings_source( 'core/post-data' );
 	if ( null === $source ) {
 		return $block_content;
 	}
 
 	// Get the published date.
-	$published_datetime = $source->get_value( $block['attrs']['metadata']['bindings']['datetime']['args'], $instance, 'datetime' );
+	$published_datetime = $source->get_value( array( 'field' => 'date' ), $instance, 'datetime' );
 	if ( ! $published_datetime ) {
 		return $block_content;
 	}
 	$published_timestamp = strtotime( $published_datetime );
 
 	// Get the modified date.
-	$modified_source_args = array_merge(
-		$block['attrs']['metadata']['bindings']['datetime']['args'],
-		array( 'field' => 'modified' )
-	);
-	$modified_datetime = $source->get_value( $modified_source_args, $instance, 'datetime' );
+	$modified_datetime = $source->get_value( array( 'field' => 'modified' ), $instance, 'datetime' );
 	if ( ! $modified_datetime ) {
 		return $block_content;
 	}
