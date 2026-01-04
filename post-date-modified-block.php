@@ -11,6 +11,7 @@ namespace PostDateModifiedBlock;
 use WP_Block;
 use WP_HTML_Tag_Processor;
 use WP_HTML_Text_Replacement;
+use WP_Block_Bindings_Source;
 
 /**
  * Filters the content of a single block Date block to add the Modified date as well if it is different.
@@ -46,9 +47,14 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		$block_content = '';
 	}
 
+	$date_format = $block['attrs']['format'] ?? get_option( 'date_format' );
+
 	if (
-		// Short-circuit if nothing is being displayed.
+		// Nothing is being displayed.
 		'' === $block_content
+		||
+		// Date format is invalid.
+		( ! is_string( $date_format ) || '' === $date_format )
 		||
 		// Pass through Date block from 6.8 which has the "Display last modified date" setting enabled.
 		( isset( $block['attrs']['displayType'] ) && 'modified' === $block['attrs']['displayType'] )
@@ -57,13 +63,14 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		(
 			// This indicates the block is from 6.9.
 			isset( $block['attrs']['datetime'] ) &&
+			// Look at bindings to see if connected to published date.
 			(
-				! isset(
-					$block['attrs']['metadata']['bindings']['datetime']['source'],
-					$block['attrs']['metadata']['bindings']['datetime']['args']['field']
-				) ||
-				'core/post-data' !== $block['attrs']['metadata']['bindings']['datetime']['source'] ||
-				'date' !== $block['attrs']['metadata']['bindings']['datetime']['args']['field']
+				'core/post-data' !== ( $block['attrs']['metadata']['bindings']['datetime']['source'] ?? null ) ||
+				'date' !== (
+					$block['attrs']['metadata']['bindings']['datetime']['args']['field'] ??
+					$block['attrs']['metadata']['bindings']['datetime']['args']['key'] ??
+					null
+				)
 			)
 		)
 	) {
@@ -77,27 +84,9 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 	}
 
 	// Get the published date.
-	$published_datetime = $source->get_value( array( 'field' => 'date' ), $instance, 'datetime' );
-	if ( ! is_string( $published_datetime ) || '' === $published_datetime ) {
-		return $block_content;
-	}
-	$published_timestamp = strtotime( $published_datetime );
-	if ( false === $published_timestamp || $published_timestamp < 1 ) {
-		return $block_content;
-	}
-
-	// Get the modified date.
-	$modified_datetime = $source->get_value( array( 'field' => 'modified' ), $instance, 'datetime' );
-	if ( ! is_string( $modified_datetime ) || '' === $modified_datetime ) {
-		return $block_content;
-	}
-	$modified_timestamp = strtotime( $modified_datetime );
-	if ( false === $modified_timestamp || $modified_timestamp < 1 ) {
-		return $block_content;
-	}
-
-	$date_format = $block['attrs']['format'] ?? get_option( 'date_format' );
-	if ( ! is_string( $date_format ) || '' === $date_format ) {
+	$published_timestamp = get_timestamp( $source, 'date', $instance );
+	$modified_timestamp  = get_timestamp( $source, 'modified', $instance );
+	if ( null === $published_timestamp || null === $modified_timestamp ) {
 		return $block_content;
 	}
 
@@ -108,6 +97,7 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		return $block_content;
 	}
 
+	// Append the modified date to the end of the Date block's wrapper element.
 	$processor = new class( $block_content ) extends WP_HTML_Tag_Processor {
 		public function append_html( string $html ): bool {
 			if ( ! $this->has_bookmark( 'last_closing_tag' ) ) {
@@ -131,17 +121,16 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		}
 	}
 	$processor->seek( 'last_closing_tag' );
-
-	// See Microformat classes used at <https://github.com/WordPress/wordpress-develop/blob/ebd415b045a2b1bbeb4d227e890c78a15ff8d85e/src/wp-content/themes/twentynineteen/inc/template-tags.php#L17>.
-	$html = sprintf(
-		' <span class="modified">(%s <time class="updated" datetime="%s">%s</time>)</span>',
-		// TODO: The "modified" text should come from the editor.
-		esc_html__( 'Modified:', 'post-date-modified-block' ),
-		esc_attr( (string) wp_date( 'c', $modified_timestamp ) ),
-		esc_html( $modified_date_formatted )
+	$processor->append_html(
+		sprintf(
+			// See Microformat classes used at <https://github.com/WordPress/wordpress-develop/blob/ebd415b045a2b1bbeb4d227e890c78a15ff8d85e/src/wp-content/themes/twentynineteen/inc/template-tags.php#L17>.
+			' <span class="modified">(%s <time class="updated" datetime="%s">%s</time>)</span>',
+			// TODO: The "modified" text should come from the editor.
+			esc_html__( 'Modified:', 'post-date-modified-block' ),
+			esc_attr( (string) wp_date( 'c', $modified_timestamp ) ),
+			esc_html( $modified_date_formatted )
+		)
 	);
-
-	$processor->append_html( $html );
 
 	return $processor->get_updated_html();
 }
@@ -152,6 +141,26 @@ add_filter(
 	10,
 	3
 );
+
+/**
+ * Gets timestamp.
+ *
+ * @param WP_Block_Bindings_Source $source   Block bindings source.
+ * @param string                   $field    Binding field.
+ * @param WP_Block                 $instance Block instance.
+ * @return positive-int|null Timestamp or null on failure.
+ */
+function get_timestamp( WP_Block_Bindings_Source $source, string $field, WP_Block $instance ): ?int {
+	$datetime = $source->get_value( array( 'field' => $field ), $instance, 'datetime' );
+	if ( ! is_string( $datetime ) || '' === $datetime ) {
+		return null;
+	}
+	$timestamp = strtotime( $datetime );
+	if ( false === $timestamp || $timestamp < 1 ) {
+		return null;
+	}
+	return $timestamp;
+}
 
 /**
  * Formats date.
