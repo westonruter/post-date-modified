@@ -99,6 +99,12 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		return $block_content;
 	}
 
+	// Obtain the template for rendering the modified date.
+	$modified_date_template = $block['attrs']['modifiedDateTemplate'] ?? null;
+	if ( ! is_string( $modified_date_template ) || ! str_contains( $modified_date_template, '%s' ) ) {
+		$modified_date_template = get_modified_date_template();
+	}
+
 	// Append the modified date to the end of the Date block's wrapper element.
 	$processor = new class( $block_content ) extends WP_HTML_Tag_Processor {
 		public function append_html( string $html ): bool {
@@ -124,16 +130,17 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 	}
 	$processor->seek( 'last_closing_tag' );
 	$processor->append_html(
+		' <span class="modified">' .
 		sprintf(
 			// See Microformat classes used at <https://github.com/WordPress/wordpress-develop/blob/ebd415b045a2b1bbeb4d227e890c78a15ff8d85e/src/wp-content/themes/twentynineteen/inc/template-tags.php#L17>.
-			' <span class="modified">(%s <time class="updated" datetime="%s">%s</time>)</span>',
-			// TODO: The "modified" text should come from the editor.
-			esc_html__( 'Modified:', 'post-date-modified-block' ),
-			esc_attr( (string) wp_date( 'c', $modified_timestamp ) ),
-			esc_html( $modified_date_formatted )
-		)
+			esc_html( $modified_date_template ),
+			sprintf(
+				'<time class="updated" datetime="%s">%s</time>',
+				esc_attr( (string) wp_date( 'c', $modified_timestamp ) ),
+				esc_html( $modified_date_formatted )
+			)
+		) . '</span>'
 	);
-
 	return $processor->get_updated_html();
 }
 
@@ -143,6 +150,31 @@ add_filter(
 	10,
 	3
 );
+
+add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\enqueue_editor_assets' );
+
+/**
+ * Enqueues block editor assets.
+ */
+function enqueue_editor_assets(): void {
+	wp_enqueue_script(
+		'post-date-modified-block-editor',
+		plugins_url( 'post-date-modified-block.js', __FILE__ ),
+		array( 'wp-hooks', 'wp-block-editor', 'wp-components', 'wp-i18n', 'wp-element', 'wp-blocks', 'wp-data' ),
+		filemtime( __DIR__ . '/post-date-modified-block.js' ),
+		true
+	);
+}
+
+/**
+ * Gets the template for rendering the modified date.
+ *
+ * @return string String format for rendering the modified date.
+ */
+function get_modified_date_template(): string {
+	/* translators: %s is a <time> element. */
+	return __( '(Modified: %s)', 'post-date-modified-block' );
+}
 
 /**
  * Gets timestamp.
