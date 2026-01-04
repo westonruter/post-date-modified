@@ -6,6 +6,8 @@
  * Requires PHP: 7.2
  */
 
+// TODO: Blueprint.
+
 namespace PostDateModifiedBlock;
 
 use WP_Block;
@@ -54,7 +56,7 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		( ! is_string( $date_format ) || '' === $date_format )
 		||
 		// Pass through Date block from 6.8 which has the "Display last modified date" setting enabled.
-		( isset( $block['attrs']['displayType'] ) && 'modified' === $block['attrs']['displayType'] )
+		( 'modified' === ( $block['attrs']['displayType'] ?? null ) )
 		||
 		// Pass through Date block from 6.9 if it isn't for displaying the published date.
 		(
