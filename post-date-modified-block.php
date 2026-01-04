@@ -16,9 +16,6 @@ use WP_Block_Bindings_Source;
 /**
  * Filters the content of a single block Date block to add the Modified date as well if it is different.
  *
- * This is not backwards-compatible with the Post Date block prior to block bindings. It is also only supports the
- * 'field' arg, as opposed to the 'key' arg previously implemented in Gutenberg.
- *
  * @phpstan-param array{
  *     "blockName": non-empty-string,
  *     "attrs"?: array{
