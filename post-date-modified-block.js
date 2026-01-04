@@ -1,7 +1,7 @@
 ( ( wp ) => {
 	const { addFilter } = wp.hooks;
 	const { InspectorControls } = wp.blockEditor;
-	const { PanelBody, TextControl } = wp.components;
+	const { PanelBody, TextControl, ToggleControl } = wp.components;
 	const { __ } = wp.i18n;
 	const { createElement, Fragment } = wp.element;
 	const { store: blocksStore } = wp.blocks;
@@ -25,7 +25,15 @@
 				...settings.attributes,
 				modifiedDateTemplate: {
 					type: 'string',
-					default: __( '(Modified: %s)', 'post-date-modified-block' ),
+					default: window.postDateModifiedBlockDefaultTemplate || '',
+				},
+				modifiedDateOnSeparateLine: {
+					type: 'boolean',
+					default: false,
+				},
+				publishDatePrefix: {
+					type: 'string',
+					default: '',
 				},
 			},
 		};
@@ -61,7 +69,7 @@
 				return createElement( BlockEdit, props );
 			}
 
-			const { modifiedDateTemplate } = attributes;
+			const { modifiedDateTemplate, modifiedDateOnSeparateLine, publishDatePrefix } = attributes;
 
 			return createElement(
 				Fragment,
@@ -72,15 +80,26 @@
 					null,
 					createElement(
 						PanelBody,
-						{ title: __( 'Modified Date', 'post-date-modified-block' ) },
+						{ title: __( 'With Modified Date', 'post-date-modified-block' ) },
 						createElement( TextControl, {
 							label: __( 'Template', 'post-date-modified-block' ),
 							value: modifiedDateTemplate,
 							onChange: ( value ) => setAttributes( { modifiedDateTemplate: value } ),
 							help: __( 'Template for displaying modified date when it differs from the published date. The date in the format above is displayed where "%s" appears.', 'post-date-modified-block' ),
-						} )
-					)
-				)
+						} ),
+						createElement( ToggleControl, {
+							label: __( 'Show on separate line', 'post-date-modified-block' ),
+							checked: modifiedDateOnSeparateLine,
+							onChange: ( value ) => setAttributes( { modifiedDateOnSeparateLine: value } ),
+						} ),
+						createElement( TextControl, {
+							label: __( 'Publish date prefix', 'post-date-modified-block' ),
+							value: publishDatePrefix,
+							onChange: ( value ) => setAttributes( { publishDatePrefix: value } ),
+							help: __( 'Label to prefix to published when modified date is displayed.', 'post-date-modified-block' ),
+						} ),
+					),
+				),
 			);
 		};
 	};

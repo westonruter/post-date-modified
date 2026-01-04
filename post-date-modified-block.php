@@ -14,6 +14,14 @@ use WP_Block;
 use WP_HTML_Tag_Processor;
 use WP_HTML_Text_Replacement;
 use WP_Block_Bindings_Source;
+use WP_HTML_Span;
+
+/**
+ * Version.
+ *
+ * @var string
+ */
+const VERSION = '1.0.0';
 
 /**
  * Filters the content of a single block Date block to add the Modified date as well if it is different.
@@ -24,6 +32,9 @@ use WP_Block_Bindings_Source;
  *         "displayType"?: "modified",
  *         "format"?: non-empty-string,
  *         "datetime"?: non-empty-string,
+ *         "modifiedDateTemplate"?: string,
+ *         "modifiedDateOnSeparateLine"?: bool,
+ *         "publishDatePrefix"?: string,
  *         "metadata"?: array{
  *             "bindings"?: array{
  *                 "datetime"?: array{
@@ -102,25 +113,67 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 	// Obtain the template for rendering the modified date.
 	$modified_date_template = $block['attrs']['modifiedDateTemplate'] ?? null;
 	if ( ! is_string( $modified_date_template ) || ! str_contains( $modified_date_template, '%s' ) ) {
-		$modified_date_template = get_modified_date_template();
+		$modified_date_template = get_default_modified_date_template();
 	}
+
+	// Render the modified date.
+	$html = '';
+	if ( $block['attrs']['modifiedDateOnSeparateLine'] ?? false ) {
+		$html .= '<br>';
+	} else {
+		$html .= ' ';
+	}
+	$html .= '<span class="modified">';
+	$html .= str_replace(
+		'%s',
+		// See Microformat classes used at <https://github.com/WordPress/wordpress-develop/blob/ebd415b045a2b1bbeb4d227e890c78a15ff8d85e/src/wp-content/themes/twentynineteen/inc/template-tags.php#L17>.
+		sprintf(
+			'<time class="updated" datetime="%s">%s</time>',
+			esc_attr( (string) wp_date( 'c', $modified_timestamp ) ),
+			esc_html( $modified_date_formatted )
+		),
+		esc_html( $modified_date_template )
+	);
+	$html .= '</span>';
 
 	// Append the modified date to the end of the Date block's wrapper element.
 	$processor = new class( $block_content ) extends WP_HTML_Tag_Processor {
-		public function append_html( string $html ): bool {
-			if ( ! $this->has_bookmark( 'last_closing_tag' ) ) {
-				return false;
-			}
-			$this->lexical_updates[] = new WP_HTML_Text_Replacement(
-				$this->bookmarks['last_closing_tag']->start,
-				0,
-				$html
-			);
-			return true;
+
+		/**
+		 * Gets the span for the current token.
+		 *
+		 * @return WP_HTML_Span Current token span.
+		 */
+		private function get_span(): WP_HTML_Span {
+			// Note: This call will never fail according to the usage of this class, given it is always called after ::next_tag() is true.
+			$this->set_bookmark( 'here' );
+			return $this->bookmarks['here'];
+		}
+
+		/**
+		 * Inserts text before the current token.
+		 *
+		 * @param string $text Text to insert.
+		 */
+		public function insert_before( string $text ) {
+			$this->lexical_updates[] = new WP_HTML_Text_Replacement( $this->get_span()->start, 0, $text );
+		}
+
+		/**
+		 * Inserts text after the current token.
+		 *
+		 * @param string $text Text to insert.
+		 */
+		public function insert_after( string $text ) {
+			$span = $this->get_span();
+
+			$this->lexical_updates[] = new WP_HTML_Text_Replacement( $span->start + $span->length, 0, $text );
 		}
 	};
 	while ( $processor->next_tag( array( 'tag_closers' => 'visit' ) ) ) {
-		if ( $processor->is_tag_closer() ) {
+		if ( ! $processor->has_bookmark( 'first_opening_tag' ) && ! $processor->is_tag_closer() ) {
+			$processor->set_bookmark( 'first_opening_tag' );
+		} elseif ( $processor->is_tag_closer() ) {
 			$processor->set_bookmark( 'last_closing_tag' );
 		} elseif ( 'TIME' === $processor->get_tag() ) {
 			// Microformat classes used at <https://github.com/WordPress/wordpress-develop/blob/ebd415b045a2b1bbeb4d227e890c78a15ff8d85e/src/wp-content/themes/twentynineteen/inc/template-tags.php#L15-L18>.
@@ -128,19 +181,18 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 			$processor->add_class( 'published' );
 		}
 	}
-	$processor->seek( 'last_closing_tag' );
-	$processor->append_html(
-		' <span class="modified">' .
-		sprintf(
-			// See Microformat classes used at <https://github.com/WordPress/wordpress-develop/blob/ebd415b045a2b1bbeb4d227e890c78a15ff8d85e/src/wp-content/themes/twentynineteen/inc/template-tags.php#L17>.
-			esc_html( $modified_date_template ),
-			sprintf(
-				'<time class="updated" datetime="%s">%s</time>',
-				esc_attr( (string) wp_date( 'c', $modified_timestamp ) ),
-				esc_html( $modified_date_formatted )
-			)
-		) . '</span>'
-	);
+
+	// Add the published prefix.
+	$publish_date_prefix = $block['attrs']['publishDatePrefix'] ?? null;
+	if ( is_string( $publish_date_prefix ) && '' !== $publish_date_prefix && $processor->seek( 'first_opening_tag' ) ) {
+		$processor->insert_after( esc_html( rtrim( $publish_date_prefix ) . ' ' ) );
+	}
+
+	// Add the modified date.
+	if ( $processor->seek( 'last_closing_tag' ) ) {
+		$processor->insert_before( $html );
+	}
+
 	return $processor->get_updated_html();
 }
 
@@ -157,21 +209,34 @@ add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\enqueue_editor_asse
  * Enqueues block editor assets.
  */
 function enqueue_editor_assets(): void {
+	$handle = 'post-date-modified-block-editor';
+
 	wp_enqueue_script(
-		'post-date-modified-block-editor',
+		$handle,
 		plugins_url( 'post-date-modified-block.js', __FILE__ ),
 		array( 'wp-hooks', 'wp-block-editor', 'wp-components', 'wp-i18n', 'wp-element', 'wp-blocks', 'wp-data' ),
-		filemtime( __DIR__ . '/post-date-modified-block.js' ),
+		VERSION,
 		true
+	);
+
+	wp_set_script_translations( $handle, 'post-date-modified-block' );
+
+	wp_add_inline_script(
+		$handle,
+		sprintf(
+			'window.postDateModifiedBlockDefaultTemplate = %s;',
+			(string) wp_json_encode( get_default_modified_date_template(), JSON_HEX_TAG | JSON_UNESCAPED_SLASHES )
+		),
+		'before'
 	);
 }
 
 /**
- * Gets the template for rendering the modified date.
+ * Gets the default template for rendering the modified date.
  *
  * @return string String format for rendering the modified date.
  */
-function get_modified_date_template(): string {
+function get_default_modified_date_template(): string {
 	/* translators: %s is a <time> element. */
 	return __( '(Modified: %s)', 'post-date-modified-block' );
 }
