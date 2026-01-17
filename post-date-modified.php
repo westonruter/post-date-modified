@@ -137,7 +137,7 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 	$modified_suffix = $block['attrs']['modifiedSuffix'] ?? null;
 	if ( null === $modified_prefix && null === $modified_suffix ) {
 		/* translators: %s is the <time> element */
-		list( $modified_prefix, $modified_suffix ) = explode( '%s', __( '(Modified: %s)', 'post-date-modified-block' ) );
+		list( $modified_prefix, $modified_suffix ) = explode( '%s', __( '(Modified: %s)', 'post-date-modified' ) );
 	}
 	$published_prefix = $block['attrs']['publishedPrefix'] ?? null;
 	$published_suffix = $block['attrs']['publishedSuffix'] ?? null;
@@ -246,7 +246,7 @@ function enqueue_editor_assets(): void {
 		true
 	);
 
-	wp_set_script_translations( $handle, 'post-date-modified-block' );
+	wp_set_script_translations( $handle, 'post-date-modified' );
 }
 
 /**
