@@ -1,6 +1,6 @@
 {
 	"name": "post-date-modified",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"description": "Yet another boilerplate/template for creating WordPress plugins.",
 	"private": true,
 	"author": "Weston Ruter",

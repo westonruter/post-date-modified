@@ -10,10 +10,10 @@
  * @wordpress-plugin
  * Plugin Name: Post Date Block: Published & Modified
  * Plugin URI: https://github.com/westonruter/post-date-modified
- * Description: This depends on Gutenberg??
+ * Description: Appends the modified date to the Post Date block when different from the published date. See <a href="https://github.com/WordPress/gutenberg/issues/53099">gutenberg#53099</a>.
  * Requires at least: 6.9
  * Requires PHP: 7.4
- * Version: 0.1.0
+ * Version: 1.0.0
  * Author: Weston Ruter
  * Author URI: https://weston.ruter.net/
  * License: GPLv2 or later
@@ -40,7 +40,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @var string
  */
-const VERSION = '0.1.0';
+const VERSION = '1.0.0';
 
 /**
  * Filters the content of a single block Date block to add the Modified date as well if it is different.
