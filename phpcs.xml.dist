@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<ruleset name="post-date-modified" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
+	<config name="text_domain" value="post-date-modified"/>
+
+	<rule ref="PHPCompatibility"/>
+	<config name="testVersion" value="7.4-"/>
+
+	<rule ref="WordPress-Docs"/>
+	<rule ref="WordPress-Extra" />
+	<rule ref="WordPress.WP.I18n"/>
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="post_date_modified"/>
+				<element value="PostDateModified"/>
+			</property>
+		</properties>
+		<exclude-pattern>tools/*</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.WP.AlternativeFunctions.json_encode_json_encode">
+		<exclude-pattern>tools/*</exclude-pattern>
+	</rule>
+
+	<arg value="ps"/>
+	<arg name="extensions" value="php"/>
+
+	<file>.</file>
+
+	<!-- Check up to 20 files simultaneously. -->
+	<arg name="parallel" value="20"/>
+
+	<!-- Do not apply script rules for unit tests -->
+	<rule ref="WordPress.WP.EnqueuedResources.NonEnqueuedScript">
+		<exclude-pattern>tests/*</exclude-pattern>
+	</rule>
+
+	<rule ref="SlevomatCodingStandard.Functions.StaticClosure" />
+	<rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint" />
+	<rule ref="SlevomatCodingStandard.TypeHints.ParameterTypeHint">
+		<properties>
+			<property name="enableMixedTypeHint" value="false" /><!-- Only available in PHP 8.0+ -->
+		</properties>
+	</rule>
+	<rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint" />
+
+	<!-- Exclude node_modules and vendor directories. -->
+	<exclude-pattern>./node_modules/*</exclude-pattern>
+	<exclude-pattern>./vendor/*</exclude-pattern>
+</ruleset>

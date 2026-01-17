@@ -1,14 +1,29 @@
 <?php
 /**
- * Plugin Name: Post Date + Modified Block
- * Description: This depends on Gutenberg??
+ * Post Date Modified Plugin for WordPress
+ *
+ * @package   PostDateModified
+ * @author    Weston Ruter
+ * @license   GPL-2.0-or-later
+ * @copyright Copyleft 2025, Weston Ruter
+ *
+ * @wordpress-plugin
+ * Plugin Name: Post Date Modified
+ * Plugin URI: https://github.com/westonruter/post-date-modified
+ * Description: ...
  * Requires at least: 6.9
- * Requires PHP: 7.2
+ * Requires PHP: 7.4
+ * Version: 0.1.0
+ * Author: Weston Ruter
+ * Author URI: https://weston.ruter.net/
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * Update URI: https://github.com/westonruter/post-date-modified
+ * GitHub Plugin URI: https://github.com/westonruter/post-date-modified
+ * Primary Branch: main
  */
 
-// TODO: Blueprint.
-
-namespace PostDateModifiedBlock;
+namespace PostDateModified;
 
 use WP_Block;
 use WP_HTML_Tag_Processor;
@@ -16,12 +31,16 @@ use WP_HTML_Text_Replacement;
 use WP_Block_Bindings_Source;
 use WP_HTML_Span;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // @codeCoverageIgnore
+}
+
 /**
- * Version.
+ * Plugin version.
  *
  * @var string
  */
-const VERSION = '1.0.0';
+const VERSION = '0.1.0';
 
 /**
  * Filters the content of a single block Date block to add the Modified date as well if it is different.
@@ -114,30 +133,34 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 	}
 
 	// Obtain the template for rendering the modified date.
-	$time_placeholder       = '%%date%%';
-	$modified_date_template = $block['attrs']['modifiedDateTemplate'] ?? null;
-	if ( ! is_string( $modified_date_template ) || ! str_contains( $modified_date_template, $time_placeholder ) ) {
-		$modified_date_template = get_default_modified_date_template();
+	$modified_prefix = $block['attrs']['modifiedPrefix'] ?? null;
+	$modified_suffix = $block['attrs']['modifiedSuffix'] ?? null;
+	if ( null === $modified_prefix && null === $modified_suffix ) {
+		/* translators: %s is the <time> element */
+		list( $modified_prefix, $modified_suffix ) = explode( '%s', __( '(Modified: %s)', 'post-date-modified-block' ) );
 	}
+	$published_prefix = $block['attrs']['publishedPrefix'] ?? null;
+	$published_suffix = $block['attrs']['publishedSuffix'] ?? null;
 
-	// Render the modified date.
+	// Render the modified date after the published date.
 	$html = '';
+	if ( is_string( $published_suffix ) ) {
+		$html .= esc_html( $published_suffix );
+	}
 	if ( $block['attrs']['modifiedDateOnSeparateLine'] ?? false ) {
 		$html .= '<br>';
 	} else {
 		$html .= ' ';
 	}
 	$html .= '<span class="modified">';
-	$html .= str_replace(
-		$time_placeholder,
-		// See Microformat classes used at <https://github.com/WordPress/wordpress-develop/blob/ebd415b045a2b1bbeb4d227e890c78a15ff8d85e/src/wp-content/themes/twentynineteen/inc/template-tags.php#L17>.
-		sprintf(
-			'<time class="updated" datetime="%s">%s</time>',
-			esc_attr( (string) wp_date( 'c', $modified_timestamp ) ),
-			esc_html( $modified_date_formatted )
-		),
-		esc_html( $modified_date_template )
+	$html .= $modified_prefix;
+	// See Microformat classes used at <https://github.com/WordPress/wordpress-develop/blob/ebd415b045a2b1bbeb4d227e890c78a15ff8d85e/src/wp-content/themes/twentynineteen/inc/template-tags.php#L17>.
+	$html .= sprintf(
+		'<time class="updated" datetime="%s">%s</time>',
+		esc_attr( (string) wp_date( 'c', $modified_timestamp ) ),
+		esc_html( $modified_date_formatted )
 	);
+	$html .= $modified_suffix;
 	$html .= '</span>';
 
 	// Append the modified date to the end of the Date block's wrapper element.
@@ -187,9 +210,9 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 	}
 
 	// Add the published prefix.
-	$publish_date_prefix = $block['attrs']['publishDatePrefix'] ?? null;
-	if ( is_string( $publish_date_prefix ) && '' !== $publish_date_prefix && $processor->seek( 'first_opening_tag' ) ) {
-		$processor->insert_after( esc_html( rtrim( $publish_date_prefix ) . ' ' ) );
+	if ( is_string( $published_prefix ) && $processor->seek( 'first_opening_tag' ) ) {
+		$processor->insert_after( esc_html( $published_prefix ) );
+		// TODO: Also add a published SPAN.created wrapper?
 	}
 
 	// Add the modified date.
@@ -217,35 +240,13 @@ function enqueue_editor_assets(): void {
 
 	wp_enqueue_script(
 		$handle,
-		plugins_url( 'post-date-modified-block.js', __FILE__ ),
+		plugins_url( 'edit.js', __FILE__ ),
 		array( 'wp-hooks', 'wp-block-editor', 'wp-components', 'wp-i18n', 'wp-element', 'wp-blocks', 'wp-data' ),
 		VERSION,
 		true
 	);
 
 	wp_set_script_translations( $handle, 'post-date-modified-block' );
-
-	wp_add_inline_script(
-		$handle,
-		sprintf(
-			'window.postDateModifiedBlockDefaultTemplate = %s;',
-			(string) wp_json_encode( get_default_modified_date_template(), JSON_HEX_TAG | JSON_UNESCAPED_SLASHES )
-		),
-		'before'
-	);
-}
-
-/**
- * Gets the default template for rendering the modified date.
- *
- * @return string String format for rendering the modified date.
- */
-function get_default_modified_date_template(): string {
-	/* translators: %s is a %%date%% element. */
-	return sprintf(
-		__( '(Modified: %s)', 'post-date-modified-block' ),
-		'%%date%%'
-	);
 }
 
 /**
