@@ -1,6 +1,6 @@
 <?php
 /**
- * Post Date Modified Plugin for WordPress
+ * Post Date Block: Published & Modified Plugin for WordPress
  *
  * @package   PostDateModified
  * @author    Weston Ruter
@@ -8,9 +8,9 @@
  * @copyright Copyleft 2025, Weston Ruter
  *
  * @wordpress-plugin
- * Plugin Name: Post Date Modified
+ * Plugin Name: Post Date Block: Published & Modified
  * Plugin URI: https://github.com/westonruter/post-date-modified
- * Description: ...
+ * Description: This depends on Gutenberg??
  * Requires at least: 6.9
  * Requires PHP: 7.4
  * Version: 0.1.0
