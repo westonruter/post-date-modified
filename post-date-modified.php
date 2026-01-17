@@ -182,7 +182,7 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		 *
 		 * @param string $text Text to insert.
 		 */
-		public function insert_before( string $text ) {
+		public function insert_before( string $text ): void {
 			$this->lexical_updates[] = new WP_HTML_Text_Replacement( $this->get_span()->start, 0, $text );
 		}
 
@@ -191,7 +191,7 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		 *
 		 * @param string $text Text to insert.
 		 */
-		public function insert_after( string $text ) {
+		public function insert_after( string $text ): void {
 			$span = $this->get_span();
 
 			$this->lexical_updates[] = new WP_HTML_Text_Replacement( $span->start + $span->length, 0, $text );
