@@ -72,6 +72,16 @@
 	);
 
 	/**
+	 * @typedef {Object} PostDateModifiedAttributes
+	 * @property {boolean} showModifiedDateWhenDifferent Show modified date when different from published date.
+	 * @property {string}  modifiedPrefix                Modified date prefix.
+	 * @property {string}  modifiedSuffix                Modified date suffix.
+	 * @property {boolean} modifiedDateOnSeparateLine    Show on separate line.
+	 * @property {string}  publishedPrefix               Published date prefix.
+	 * @property {string}  publishedSuffix               Published date suffix.
+	 */
+
+	/**
 	 * Add Inspector Control to core/post-date block.
 	 *
 	 * @param {import('react').ComponentType} BlockEdit Original BlockEdit component.
@@ -79,7 +89,7 @@
 	 */
 	const withModifiedDateTemplateControl = ( BlockEdit ) => {
 		return (
-			/** @type {import('@wordpress/blocks').BlockEditProps<Record<string, any>> & { name: string }} */ props
+			/** @type {import('@wordpress/blocks').BlockEditProps<PostDateModifiedAttributes> & { name: string }} */ props
 		) => {
 			const { name, attributes, setAttributes } = props;
 
