@@ -18,8 +18,8 @@
 	/**
 	 * Add modifiedDateTemplate attribute to core/post-date block.
 	 *
-	 * @param {any}    settings Block settings.
-	 * @param {string} name     Block name.
+	 * @param {import('@wordpress/blocks').BlockConfiguration} settings Block settings.
+	 * @param {string}                                         name     Block name.
 	 * @return {Object} Modified block settings.
 	 */
 	const addModifiedDateTemplateAttribute = ( settings, name ) => {
@@ -78,11 +78,15 @@
 	 * @return {Function} Wrapped BlockEdit component.
 	 */
 	const withModifiedDateTemplateControl = ( BlockEdit ) => {
-		return ( /** @type {any} */ props ) => {
+		return (
+			/** @type {import('@wordpress/blocks').BlockEditProps<Record<string, any>> & { name: string }} */ props
+		) => {
 			const { name, attributes, setAttributes } = props;
 
 			const activeBlockVariationName = useSelect(
-				( /** @type {any} */ select ) => {
+				(
+					/** @type {import('@wordpress/data').SelectFunction} */ select
+				) => {
 					const { getActiveBlockVariation } =
 						/** @type {import("./types").BlocksSelect} */ (
 							select( blocksStore )
