@@ -129,6 +129,77 @@
 	};
 
 	/**
+	 * Component for the modified date settings.
+	 *
+	 * @param {Object}                                               props               Component props.
+	 * @param {PostDateModifiedAttributes}                           props.attributes    Block attributes.
+	 * @param {(attrs: Partial<PostDateModifiedAttributes>) => void} props.setAttributes Callback to set attributes.
+	 * @return {import('react').ReactElement} The component.
+	 */
+	const ModifiedDateSettings = ( { attributes, setAttributes } ) => {
+		const {
+			modifiedPrefix,
+			modifiedSuffix,
+			modifiedDateOnSeparateLine,
+			publishedPrefix,
+			publishedSuffix,
+		} = attributes;
+
+		return createElement(
+			Fragment,
+			null,
+			createElement( PrefixSuffixControls, {
+				prefix: modifiedPrefix,
+				suffix: modifiedSuffix,
+				placeholder: __( 'Modified:', 'post-date-modified-block' ),
+				onPrefixChange: ( /** @type {string} */ value ) =>
+					setAttributes( {
+						modifiedPrefix: value,
+					} ),
+				onSuffixChange: ( /** @type {string} */ value ) =>
+					setAttributes( {
+						modifiedSuffix: value,
+					} ),
+			} ),
+
+			createElement( Divider, null ),
+
+			createElement(
+				Heading,
+				null,
+				__( 'Published Date Display', 'post-date-modified-block' )
+			),
+
+			createElement( ToggleControl, {
+				__nextHasNoMarginBottom: true,
+				label: __(
+					'Show on separate line',
+					'post-date-modified-block'
+				),
+				checked: modifiedDateOnSeparateLine,
+				onChange: ( /** @type {boolean} */ value ) =>
+					setAttributes( {
+						modifiedDateOnSeparateLine: value,
+					} ),
+			} ),
+
+			createElement( PrefixSuffixControls, {
+				prefix: publishedPrefix,
+				suffix: publishedSuffix,
+				placeholder: __( 'Published:', 'post-date-modified-block' ),
+				onPrefixChange: ( /** @type {string} */ value ) =>
+					setAttributes( {
+						publishedPrefix: value,
+					} ),
+				onSuffixChange: ( /** @type {string} */ value ) =>
+					setAttributes( {
+						publishedSuffix: value,
+					} ),
+			} )
+		);
+	};
+
+	/**
 	 * @typedef {import('@wordpress/blocks').BlockEditProps<PostDateModifiedAttributes> & { name: string }} PostDateModifiedEditProps
 	 */
 
@@ -163,14 +234,8 @@
 				return createElement( BlockEdit, props );
 			}
 
-			const {
-				showModifiedDateWhenDifferent,
-				modifiedPrefix,
-				modifiedSuffix,
-				modifiedDateOnSeparateLine,
-				publishedPrefix,
-				publishedSuffix,
-			} = /** @type {PostDateModifiedAttributes} */ attributes;
+			const { showModifiedDateWhenDifferent } =
+				/** @type {PostDateModifiedAttributes} */ attributes;
 
 			return createElement(
 				Fragment,
@@ -200,77 +265,10 @@
 								} ),
 						} ),
 						showModifiedDateWhenDifferent &&
-							createElement(
-								Fragment,
-								null,
-								createElement( PrefixSuffixControls, {
-									prefix: modifiedPrefix,
-									suffix: modifiedSuffix,
-									placeholder: __(
-										'Modified:',
-										'post-date-modified-block'
-									),
-									onPrefixChange: (
-										/** @type {string} */ value
-									) =>
-										setAttributes( {
-											modifiedPrefix: value,
-										} ),
-									onSuffixChange: (
-										/** @type {string} */ value
-									) =>
-										setAttributes( {
-											modifiedSuffix: value,
-										} ),
-								} ),
-
-								createElement( Divider, null ),
-
-								createElement(
-									Heading,
-									null,
-									__(
-										'Published Date Display',
-										'post-date-modified-block'
-									)
-								),
-
-								createElement( ToggleControl, {
-									__nextHasNoMarginBottom: true,
-									label: __(
-										'Show on separate line',
-										'post-date-modified-block'
-									),
-									checked: modifiedDateOnSeparateLine,
-									onChange: (
-										/** @type {boolean} */ value
-									) =>
-										setAttributes( {
-											modifiedDateOnSeparateLine: value,
-										} ),
-								} ),
-
-								createElement( PrefixSuffixControls, {
-									prefix: publishedPrefix,
-									suffix: publishedSuffix,
-									placeholder: __(
-										'Published:',
-										'post-date-modified-block'
-									),
-									onPrefixChange: (
-										/** @type {string} */ value
-									) =>
-										setAttributes( {
-											publishedPrefix: value,
-										} ),
-									onSuffixChange: (
-										/** @type {string} */ value
-									) =>
-										setAttributes( {
-											publishedSuffix: value,
-										} ),
-								} )
-							)
+							createElement( ModifiedDateSettings, {
+								attributes,
+								setAttributes,
+							} )
 					)
 				)
 			);
