@@ -18,6 +18,8 @@
 	/**
 	 * Add modifiedDateTemplate attribute to core/post-date block.
 	 *
+	 * @since 1.0.0
+	 *
 	 * @param {import('@wordpress/blocks').BlockConfiguration} settings Block settings.
 	 * @param {string}                                         name     Block name.
 	 * @return {import('@wordpress/blocks').BlockConfiguration} Modified block settings.
@@ -84,6 +86,8 @@
 	/**
 	 * Component for the prefix and suffix controls.
 	 *
+	 * @since 1.0.0
+	 *
 	 * @param {Object}                  props                Component props.
 	 * @param {string}                  props.prefix         Prefix value.
 	 * @param {string}                  props.suffix         Suffix value.
@@ -130,6 +134,8 @@
 
 	/**
 	 * Component for the modified date settings.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @param {Object}                                               props               Component props.
 	 * @param {PostDateModifiedAttributes}                           props.attributes    Block attributes.
@@ -202,6 +208,8 @@
 
 	/**
 	 * Add Inspector Control to core/post-date block.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @param {import('react').ComponentType<PostDateModifiedEditProps>} BlockEdit Original BlockEdit component.
 	 * @return {import('react').ComponentType<PostDateModifiedEditProps>} Wrapped BlockEdit component.
