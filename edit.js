@@ -257,7 +257,9 @@
 		withModifiedDateTemplateControl
 	);
 } )(
-	/** @type {Window & { wp: import("./types").WPGlobal }} */ (
-		/** @type {unknown} */ ( window )
-	).wp
+	/** @type {import("./types").WPGlobal} */ (
+		/** @type {Window & { wp: import("./types").WPGlobal }} */ (
+			/** @type {unknown} */ ( window )
+		).wp // TODO: PhpStorm complains "Unresolved variable wp".
+	)
 );
