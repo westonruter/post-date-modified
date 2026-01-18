@@ -256,10 +256,4 @@
 		'post-date-modified-block/with-inspector-control',
 		withModifiedDateTemplateControl
 	);
-} )(
-	/** @type {import("./types").WPGlobal} */ (
-		/** @type {Window & { wp: import("./types").WPGlobal }} */ (
-			/** @type {unknown} */ ( window )
-		).wp
-	)
-);
+} )( window.wp );
