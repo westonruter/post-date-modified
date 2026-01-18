@@ -121,7 +121,7 @@
 				modifiedDateOnSeparateLine,
 				publishedPrefix,
 				publishedSuffix,
-			} = attributes;
+			} = /** @type {PostDateModifiedAttributes} */ attributes;
 
 			const panelElements = [];
 			if ( showModifiedDateWhenDifferent ) {
