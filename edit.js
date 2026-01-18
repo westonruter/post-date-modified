@@ -82,6 +82,53 @@
 	 */
 
 	/**
+	 * Component for the prefix and suffix controls.
+	 *
+	 * @param {Object}                  props                Component props.
+	 * @param {string}                  props.prefix         Prefix value.
+	 * @param {string}                  props.suffix         Suffix value.
+	 * @param {string}                  [props.placeholder]  Prefix placeholder.
+	 * @param {(value: string) => void} props.onPrefixChange Callback for prefix change.
+	 * @param {(value: string) => void} props.onSuffixChange Callback for suffix change.
+	 * @return {import('react').ReactElement} The component.
+	 */
+	const PrefixSuffixControls = ( {
+		prefix,
+		suffix,
+		placeholder,
+		onPrefixChange,
+		onSuffixChange,
+	} ) => {
+		return createElement(
+			Flex,
+			null,
+			createElement(
+				FlexItem,
+				null,
+				createElement( TextControl, {
+					__next40pxDefaultSize: true,
+					__nextHasNoMarginBottom: true,
+					label: __( 'Prefix', 'post-date-modified-block' ),
+					value: prefix,
+					placeholder,
+					onChange: onPrefixChange,
+				} )
+			),
+			createElement(
+				FlexItem,
+				null,
+				createElement( TextControl, {
+					__next40pxDefaultSize: true,
+					__nextHasNoMarginBottom: true,
+					label: __( 'Suffix', 'post-date-modified-block' ),
+					value: suffix,
+					onChange: onSuffixChange,
+				} )
+			)
+		);
+	};
+
+	/**
 	 * Add Inspector Control to core/post-date block.
 	 *
 	 * @param {import('react').ComponentType} BlockEdit Original BlockEdit component.
@@ -123,113 +170,6 @@
 				publishedSuffix,
 			} = /** @type {PostDateModifiedAttributes} */ attributes;
 
-			const panelElements = [];
-			if ( showModifiedDateWhenDifferent ) {
-				panelElements.push(
-					createElement(
-						Flex,
-						null,
-						createElement(
-							FlexItem,
-							null,
-							createElement( TextControl, {
-								__next40pxDefaultSize: true,
-								__nextHasNoMarginBottom: true,
-								label: __(
-									'Prefix',
-									'post-date-modified-block'
-								),
-								value: modifiedPrefix,
-								placeholder: __(
-									'Modified:',
-									'post-date-modified-block'
-								),
-								onChange: ( /** @type {string} */ value ) =>
-									setAttributes( { modifiedPrefix: value } ),
-							} )
-						),
-						createElement(
-							FlexItem,
-							null,
-							createElement( TextControl, {
-								__next40pxDefaultSize: true,
-								__nextHasNoMarginBottom: true,
-								label: __(
-									'Suffix',
-									'post-date-modified-block'
-								),
-								value: modifiedSuffix,
-								onChange: ( /** @type {string} */ value ) =>
-									setAttributes( { modifiedSuffix: value } ),
-							} )
-						)
-					),
-
-					createElement( Divider, null ),
-
-					createElement(
-						Heading,
-						null,
-						__(
-							'Published Date Display',
-							'post-date-modified-block'
-						)
-					),
-
-					createElement( ToggleControl, {
-						__nextHasNoMarginBottom: true,
-						label: __(
-							'Show on separate line',
-							'post-date-modified-block'
-						),
-						checked: modifiedDateOnSeparateLine,
-						onChange: ( /** @type {boolean} */ value ) =>
-							setAttributes( {
-								modifiedDateOnSeparateLine: value,
-							} ),
-					} ),
-
-					createElement(
-						Flex,
-						null,
-						createElement(
-							FlexItem,
-							null,
-							createElement( TextControl, {
-								__next40pxDefaultSize: true,
-								__nextHasNoMarginBottom: true,
-								label: __(
-									'Prefix',
-									'post-date-modified-block'
-								),
-								value: publishedPrefix,
-								placeholder: __(
-									'Published:',
-									'post-date-modified-block'
-								),
-								onChange: ( /** @type {string} */ value ) =>
-									setAttributes( { publishedPrefix: value } ),
-							} )
-						),
-						createElement(
-							FlexItem,
-							null,
-							createElement( TextControl, {
-								__next40pxDefaultSize: true,
-								__nextHasNoMarginBottom: true,
-								label: __(
-									'Suffix',
-									'post-date-modified-block'
-								),
-								value: publishedSuffix,
-								onChange: ( /** @type {string} */ value ) =>
-									setAttributes( { publishedSuffix: value } ),
-							} )
-						)
-					)
-				);
-			}
-
 			return createElement(
 				Fragment,
 				null,
@@ -257,7 +197,78 @@
 									showModifiedDateWhenDifferent: value,
 								} ),
 						} ),
-						...panelElements
+						showModifiedDateWhenDifferent &&
+							createElement(
+								Fragment,
+								null,
+								createElement( PrefixSuffixControls, {
+									prefix: modifiedPrefix,
+									suffix: modifiedSuffix,
+									placeholder: __(
+										'Modified:',
+										'post-date-modified-block'
+									),
+									onPrefixChange: (
+										/** @type {string} */ value
+									) =>
+										setAttributes( {
+											modifiedPrefix: value,
+										} ),
+									onSuffixChange: (
+										/** @type {string} */ value
+									) =>
+										setAttributes( {
+											modifiedSuffix: value,
+										} ),
+								} ),
+
+								createElement( Divider, null ),
+
+								createElement(
+									Heading,
+									null,
+									__(
+										'Published Date Display',
+										'post-date-modified-block'
+									)
+								),
+
+								createElement( ToggleControl, {
+									__nextHasNoMarginBottom: true,
+									label: __(
+										'Show on separate line',
+										'post-date-modified-block'
+									),
+									checked: modifiedDateOnSeparateLine,
+									onChange: (
+										/** @type {boolean} */ value
+									) =>
+										setAttributes( {
+											modifiedDateOnSeparateLine: value,
+										} ),
+								} ),
+
+								createElement( PrefixSuffixControls, {
+									prefix: publishedPrefix,
+									suffix: publishedSuffix,
+									placeholder: __(
+										'Published:',
+										'post-date-modified-block'
+									),
+									onPrefixChange: (
+										/** @type {string} */ value
+									) =>
+										setAttributes( {
+											publishedPrefix: value,
+										} ),
+									onSuffixChange: (
+										/** @type {string} */ value
+									) =>
+										setAttributes( {
+											publishedSuffix: value,
+										} ),
+								} )
+							)
 					)
 				)
 			);
