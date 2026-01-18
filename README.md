@@ -3,7 +3,7 @@
 <!-- markdownlint-disable-next-line no-inline-html -->
 <img src=".wordpress-org/banner.svg" alt="Banner for the Post Date Block: Published & Modified plugin" width="1544" height="500">
 
-Plugin description up to 150 characters goes here.
+Appends the modified date to the Post Date block when different from the published date.
 
 **Contributors:** [westonruter](https://profile.wordpress.org/westonruter)  
 **Tags:**         performance  
