@@ -11,7 +11,7 @@ export type WPGlobal = {
 export type BlocksSelect = {
 	getActiveBlockVariation: (
 		blockName: string,
-		attributes: Object
+		attributes: import('@wordpress/blocks').BlockAttributes
 	) => { name: string } | undefined;
 };
 
