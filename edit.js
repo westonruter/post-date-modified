@@ -231,7 +231,6 @@
 								'post-date-modified-block'
 							),
 						},
-						// TODO: Add validity to show a warning when the string lacks '%%date%%';
 						createElement( ToggleControl, {
 							__nextHasNoMarginBottom: true,
 							label: __(
