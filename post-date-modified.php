@@ -280,7 +280,7 @@ function format_date( int $timestamp, string $format ): string {
 	if ( 'human-diff' === $format ) {
 		return sprintf(
 			/* translators: %s: human-readable time difference. */
-			__( '%s ago', 'default' ),
+			__( '%s ago', 'default' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch -- Reusing core string.
 			human_time_diff( $timestamp )
 		);
 	} else {
