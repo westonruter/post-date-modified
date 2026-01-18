@@ -6,7 +6,7 @@
 Appends the modified date to the Post Date block when different from the published date.
 
 **Contributors:** [westonruter](https://profile.wordpress.org/westonruter)  
-**Tags:**         performance  
+**Tags:**         block, date, site editor, gutenberg, block templates  
 **Tested up to:** 6.9  
 **Stable tag:**   1.0.0  
 **License:**      [GPLv2 or later](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
