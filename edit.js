@@ -129,15 +129,17 @@
 	};
 
 	/**
+	 * @typedef {import('@wordpress/blocks').BlockEditProps<PostDateModifiedAttributes> & { name: string }} PostDateModifiedEditProps
+	 */
+
+	/**
 	 * Add Inspector Control to core/post-date block.
 	 *
-	 * @param {import('react').ComponentType} BlockEdit Original BlockEdit component.
-	 * @return {Function} Wrapped BlockEdit component.
+	 * @param {import('react').ComponentType<PostDateModifiedEditProps>} BlockEdit Original BlockEdit component.
+	 * @return {import('react').ComponentType<PostDateModifiedEditProps>} Wrapped BlockEdit component.
 	 */
 	const withModifiedDateTemplateControl = ( BlockEdit ) => {
-		return (
-			/** @type {import('@wordpress/blocks').BlockEditProps<PostDateModifiedAttributes> & { name: string }} */ props
-		) => {
+		return ( /** @type {PostDateModifiedEditProps} */ props ) => {
 			const { name, attributes, setAttributes } = props;
 
 			const activeBlockVariationName = useSelect(
