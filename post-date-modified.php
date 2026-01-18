@@ -199,6 +199,12 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 	};
 	while ( $processor->next_tag( array( 'tag_closers' => 'visit' ) ) ) {
 		if ( ! $processor->has_bookmark( 'first_opening_tag' ) && ! $processor->is_tag_closer() ) {
+			// Abort if the modified date was already added, which can currently happen with `gutenberg_block_bindings_render_block()`.
+			if ( $processor->has_class( 'post-date-modified' ) ) {
+				return $block_content;
+			}
+			$processor->add_class( 'post-date-modified' );
+
 			$processor->set_bookmark( 'first_opening_tag' );
 		} elseif ( $processor->is_tag_closer() ) {
 			$processor->set_bookmark( 'last_closing_tag' );
