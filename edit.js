@@ -172,10 +172,7 @@
 
 			createElement( ToggleControl, {
 				__nextHasNoMarginBottom: true,
-				label: __(
-					'Show on separate line',
-					'post-date-modified-block'
-				),
+				label: __( 'Show on separate line', 'post-date-modified' ),
 				checked: modifiedDateOnSeparateLine,
 				onChange: ( /** @type {boolean} */ value ) =>
 					setAttributes( {
@@ -186,7 +183,7 @@
 			createElement( PrefixSuffixControls, {
 				prefix: publishedPrefix,
 				suffix: publishedSuffix,
-				placeholder: __( 'Published:', 'post-date-modified-block' ),
+				placeholder: __( 'Published:', 'post-date-modified' ),
 				onPrefixChange: ( /** @type {string} */ value ) =>
 					setAttributes( {
 						publishedPrefix: value,
@@ -249,14 +246,14 @@
 						{
 							title: __(
 								'With Modified Date',
-								'post-date-modified-block'
+								'post-date-modified'
 							),
 						},
 						createElement( ToggleControl, {
 							__nextHasNoMarginBottom: true,
 							label: __(
 								'Show modified date when different from published date.',
-								'post-date-modified-block'
+								'post-date-modified'
 							),
 							checked: showModifiedDateWhenDifferent,
 							onChange: ( /** @type {boolean} */ value ) =>
