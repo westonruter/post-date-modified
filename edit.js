@@ -30,7 +30,7 @@
 		/* translators: %s is the <time> element */
 		const [ defaultModifiedPrefix, defaultModifiedSuffix ] = __(
 			'(Modified: %s)',
-			'post-date-modified-block'
+			'post-date-modified'
 		).split( '%s' );
 
 		return {
@@ -108,7 +108,7 @@
 				createElement( TextControl, {
 					__next40pxDefaultSize: true,
 					__nextHasNoMarginBottom: true,
-					label: __( 'Prefix', 'post-date-modified-block' ),
+					label: __( 'Prefix', 'post-date-modified' ),
 					value: prefix,
 					placeholder,
 					onChange: onPrefixChange,
@@ -120,7 +120,7 @@
 				createElement( TextControl, {
 					__next40pxDefaultSize: true,
 					__nextHasNoMarginBottom: true,
-					label: __( 'Suffix', 'post-date-modified-block' ),
+					label: __( 'Suffix', 'post-date-modified' ),
 					value: suffix,
 					onChange: onSuffixChange,
 				} )
@@ -151,7 +151,7 @@
 			createElement( PrefixSuffixControls, {
 				prefix: modifiedPrefix,
 				suffix: modifiedSuffix,
-				placeholder: __( 'Modified:', 'post-date-modified-block' ),
+				placeholder: __( 'Modified:', 'post-date-modified' ),
 				onPrefixChange: ( /** @type {string} */ value ) =>
 					setAttributes( {
 						modifiedPrefix: value,
@@ -167,7 +167,7 @@
 			createElement(
 				Heading,
 				null,
-				__( 'Published Date Display', 'post-date-modified-block' )
+				__( 'Published Date Display', 'post-date-modified' )
 			),
 
 			createElement( ToggleControl, {
