@@ -130,7 +130,7 @@
 									'Modified:',
 									'post-date-modified-block'
 								),
-								onChange: ( /** @type {any} */ value ) =>
+								onChange: ( /** @type {string} */ value ) =>
 									setAttributes( { modifiedPrefix: value } ),
 							} )
 						),
@@ -145,7 +145,7 @@
 									'post-date-modified-block'
 								),
 								value: modifiedSuffix,
-								onChange: ( /** @type {any} */ value ) =>
+								onChange: ( /** @type {string} */ value ) =>
 									setAttributes( { modifiedSuffix: value } ),
 							} )
 						)
@@ -169,7 +169,7 @@
 							'post-date-modified-block'
 						),
 						checked: modifiedDateOnSeparateLine,
-						onChange: ( /** @type {any} */ value ) =>
+						onChange: ( /** @type {boolean} */ value ) =>
 							setAttributes( {
 								modifiedDateOnSeparateLine: value,
 							} ),
@@ -193,7 +193,7 @@
 									'Published:',
 									'post-date-modified-block'
 								),
-								onChange: ( /** @type {any} */ value ) =>
+								onChange: ( /** @type {string} */ value ) =>
 									setAttributes( { publishedPrefix: value } ),
 							} )
 						),
@@ -208,7 +208,7 @@
 									'post-date-modified-block'
 								),
 								value: publishedSuffix,
-								onChange: ( /** @type {any} */ value ) =>
+								onChange: ( /** @type {string} */ value ) =>
 									setAttributes( { publishedSuffix: value } ),
 							} )
 						)
@@ -238,7 +238,7 @@
 								'post-date-modified-block'
 							),
 							checked: showModifiedDateWhenDifferent,
-							onChange: ( /** @type {any} */ value ) =>
+							onChange: ( /** @type {boolean} */ value ) =>
 								setAttributes( {
 									showModifiedDateWhenDifferent: value,
 								} ),
