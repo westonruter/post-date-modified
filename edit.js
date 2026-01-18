@@ -1,7 +1,15 @@
 ( ( wp ) => {
 	const { addFilter } = wp.hooks;
 	const { InspectorControls } = wp.blockEditor;
-	const { PanelBody, TextControl, ToggleControl, Flex, FlexItem, __experimentalDivider: Divider, __experimentalHeading: Heading } = wp.components;
+	const {
+		PanelBody,
+		TextControl,
+		ToggleControl,
+		Flex,
+		FlexItem,
+		__experimentalDivider: Divider,
+		__experimentalHeading: Heading,
+	} = wp.components;
 	const { __ } = wp.i18n;
 	const { createElement, Fragment } = wp.element;
 	const { store: blocksStore } = wp.blocks;
@@ -10,7 +18,7 @@
 	/**
 	 * Add modifiedDateTemplate attribute to core/post-date block.
 	 *
-	 * @param {Object} settings Block settings.
+	 * @param {any}    settings Block settings.
 	 * @param {string} name     Block name.
 	 * @return {Object} Modified block settings.
 	 */
@@ -20,7 +28,10 @@
 		}
 
 		/* translators: %s is the <time> element */
-		const [ defaultModifiedPrefix, defaultModifiedSuffix ] = __( '(Modified: %s)', 'post-date-modified-block' ).split( '%s' );
+		const [ defaultModifiedPrefix, defaultModifiedSuffix ] = __(
+			'(Modified: %s)',
+			'post-date-modified-block'
+		).split( '%s' );
 
 		return {
 			...settings,
@@ -28,7 +39,7 @@
 				...settings.attributes,
 				showModifiedDateWhenDifferent: {
 					type: 'boolean',
-					default: true
+					default: true,
 				},
 				modifiedPrefix: {
 					type: 'string',
@@ -63,28 +74,40 @@
 	/**
 	 * Add Inspector Control to core/post-date block.
 	 *
-	 * @param {Function} BlockEdit Original BlockEdit component.
+	 * @param {import('react').ComponentType} BlockEdit Original BlockEdit component.
 	 * @return {Function} Wrapped BlockEdit component.
 	 */
 	const withModifiedDateTemplateControl = ( BlockEdit ) => {
-		return ( props ) => {
+		return ( /** @type {any} */ props ) => {
 			const { name, attributes, setAttributes } = props;
 
 			const activeBlockVariationName = useSelect(
-				( select ) =>
-					select( blocksStore ).getActiveBlockVariation(
-						name,
-						attributes
-					)?.name,
+				( /** @type {any} */ select ) => {
+					const { getActiveBlockVariation } =
+						/** @type {import("./types").BlocksSelect} */ (
+							select( blocksStore )
+						);
+					return getActiveBlockVariation( name, attributes )?.name;
+				},
 				[ name, attributes ]
 			);
 
 			// Only show the control if it is the core/post-date block and the 'post-date' variation is active.
-			if ( name !== 'core/post-date' || activeBlockVariationName !== 'post-date' ) {
+			if (
+				name !== 'core/post-date' ||
+				activeBlockVariationName !== 'post-date'
+			) {
 				return createElement( BlockEdit, props );
 			}
 
-			const { showModifiedDateWhenDifferent, modifiedPrefix, modifiedSuffix, modifiedDateOnSeparateLine, publishedPrefix, publishedSuffix } = attributes;
+			const {
+				showModifiedDateWhenDifferent,
+				modifiedPrefix,
+				modifiedSuffix,
+				modifiedDateOnSeparateLine,
+				publishedPrefix,
+				publishedSuffix,
+			} = attributes;
 
 			const panelElements = [];
 			if ( showModifiedDateWhenDifferent ) {
@@ -98,11 +121,18 @@
 							createElement( TextControl, {
 								__next40pxDefaultSize: true,
 								__nextHasNoMarginBottom: true,
-								label: __( 'Prefix', 'post-date-modified-block' ),
+								label: __(
+									'Prefix',
+									'post-date-modified-block'
+								),
 								value: modifiedPrefix,
-								placeholder: __( 'Modified:', 'post-date-modified-block' ),
-								onChange: ( value ) => setAttributes( { modifiedPrefix: value } ),
-							} ),
+								placeholder: __(
+									'Modified:',
+									'post-date-modified-block'
+								),
+								onChange: ( /** @type {any} */ value ) =>
+									setAttributes( { modifiedPrefix: value } ),
+							} )
 						),
 						createElement(
 							FlexItem,
@@ -110,11 +140,15 @@
 							createElement( TextControl, {
 								__next40pxDefaultSize: true,
 								__nextHasNoMarginBottom: true,
-								label: __( 'Suffix', 'post-date-modified-block' ),
+								label: __(
+									'Suffix',
+									'post-date-modified-block'
+								),
 								value: modifiedSuffix,
-								onChange: ( value ) => setAttributes( { modifiedSuffix: value } ),
-							} ),
-						),
+								onChange: ( /** @type {any} */ value ) =>
+									setAttributes( { modifiedSuffix: value } ),
+							} )
+						)
 					),
 
 					createElement( Divider, null ),
@@ -122,14 +156,23 @@
 					createElement(
 						Heading,
 						null,
-						__( 'Published Date Display', 'post-date-modified-block' )
+						__(
+							'Published Date Display',
+							'post-date-modified-block'
+						)
 					),
 
 					createElement( ToggleControl, {
 						__nextHasNoMarginBottom: true,
-						label: __( 'Show on separate line', 'post-date-modified-block' ),
+						label: __(
+							'Show on separate line',
+							'post-date-modified-block'
+						),
 						checked: modifiedDateOnSeparateLine,
-						onChange: ( value ) => setAttributes( { modifiedDateOnSeparateLine: value } ),
+						onChange: ( /** @type {any} */ value ) =>
+							setAttributes( {
+								modifiedDateOnSeparateLine: value,
+							} ),
 					} ),
 
 					createElement(
@@ -141,11 +184,18 @@
 							createElement( TextControl, {
 								__next40pxDefaultSize: true,
 								__nextHasNoMarginBottom: true,
-								label: __( 'Prefix', 'post-date-modified-block' ),
+								label: __(
+									'Prefix',
+									'post-date-modified-block'
+								),
 								value: publishedPrefix,
-								placeholder: __( 'Published:', 'post-date-modified-block' ),
-								onChange: ( value ) => setAttributes( { publishedPrefix: value } ),
-							} ),
+								placeholder: __(
+									'Published:',
+									'post-date-modified-block'
+								),
+								onChange: ( /** @type {any} */ value ) =>
+									setAttributes( { publishedPrefix: value } ),
+							} )
 						),
 						createElement(
 							FlexItem,
@@ -153,12 +203,16 @@
 							createElement( TextControl, {
 								__next40pxDefaultSize: true,
 								__nextHasNoMarginBottom: true,
-								label: __( 'Suffix', 'post-date-modified-block' ),
+								label: __(
+									'Suffix',
+									'post-date-modified-block'
+								),
 								value: publishedSuffix,
-								onChange: ( value ) => setAttributes( { publishedSuffix: value } ),
-							} ),
-						),
-					),
+								onChange: ( /** @type {any} */ value ) =>
+									setAttributes( { publishedSuffix: value } ),
+							} )
+						)
+					)
 				);
 			}
 
@@ -171,17 +225,28 @@
 					null,
 					createElement(
 						PanelBody,
-						{ title: __( 'With Modified Date', 'post-date-modified-block' ) },
+						{
+							title: __(
+								'With Modified Date',
+								'post-date-modified-block'
+							),
+						},
 						// TODO: Add validity to show a warning when the string lacks '%%date%%';
 						createElement( ToggleControl, {
 							__nextHasNoMarginBottom: true,
-							label: __( 'Show modified date when different from published date.', 'post-date-modified-block' ),
+							label: __(
+								'Show modified date when different from published date.',
+								'post-date-modified-block'
+							),
 							checked: showModifiedDateWhenDifferent,
-							onChange: ( value ) => setAttributes( { showModifiedDateWhenDifferent: value } ),
+							onChange: ( /** @type {any} */ value ) =>
+								setAttributes( {
+									showModifiedDateWhenDifferent: value,
+								} ),
 						} ),
 						...panelElements
-					),
-				),
+					)
+				)
 			);
 		};
 	};
@@ -191,4 +256,8 @@
 		'post-date-modified-block/with-inspector-control',
 		withModifiedDateTemplateControl
 	);
-} )( window.wp );
+} )(
+	/** @type {Window & { wp: import("./types").WPGlobal }} */ (
+		/** @type {unknown} */ ( window )
+	).wp
+);
