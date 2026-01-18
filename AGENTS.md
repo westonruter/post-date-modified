@@ -1,6 +1,6 @@
-# Agents Context: Post Date Modified
+# Agents Context: Post Date Block: Published & Modified
 
-This `AGENTS.md` file provides essential context and instructions for working with the **Post Date Modified** project. This project serves as a boilerplate for developing high-quality WordPress plugins.
+This `AGENTS.md` file provides essential context and instructions for working with the **Post Date Block: Published & Modified** project. This project serves as a boilerplate for developing high-quality WordPress plugins.
 
 ## Project Overview
 

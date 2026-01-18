@@ -1,7 +1,7 @@
-# Post Date Modified
+# Post Date Block: Published & Modified
 
 <!-- markdownlint-disable-next-line no-inline-html -->
-<img src=".wordpress-org/banner.svg" alt="Banner for the Post Date Modified plugin" width="1544" height="500">
+<img src=".wordpress-org/banner.svg" alt="Banner for the Post Date Block: Published & Modified plugin" width="1544" height="500">
 
 Plugin description up to 150 characters goes here.
 
@@ -21,8 +21,8 @@ Plugin description up to 150 characters goes here.
 ### Automatic
 
 1. Visit **Plugins > Add New** in the WordPress Admin.
-2. Search for **Post Date Modified**.
-3. Install and activate the **Post Date Modified** plugin.
+2. Search for **Post Date Block: Published & Modified**.
+3. Install and activate the **Post Date Block: Published & Modified** plugin.
 
 You may also install and update via [Git Updater](https://git-updater.com/) using the [plugin's GitHub URL](https://github.com/westonruter/post-date-modified).
 
