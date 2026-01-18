@@ -20,7 +20,7 @@
 	 *
 	 * @param {import('@wordpress/blocks').BlockConfiguration} settings Block settings.
 	 * @param {string}                                         name     Block name.
-	 * @return {Object} Modified block settings.
+ * @return {import('@wordpress/blocks').BlockConfiguration} Modified block settings.
 	 */
 	const addModifiedDateTemplateAttribute = ( settings, name ) => {
 		if ( name !== 'core/post-date' ) {
