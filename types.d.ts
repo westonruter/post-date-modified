@@ -14,3 +14,9 @@ export type BlocksSelect = {
 		attributes: Object
 	) => { name: string } | undefined;
 };
+
+declare global {
+	interface Window {
+		wp: WPGlobal;
+	}
+}
