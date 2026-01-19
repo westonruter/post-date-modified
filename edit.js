@@ -29,31 +29,25 @@
 			return settings;
 		}
 
-		/* translators: %s is the <time> element */
-		const [ defaultModifiedPrefix, defaultModifiedSuffix ] = __(
-			'(Modified: %s)',
-			'post-date-modified'
-		).split( '%s' );
-
 		return {
 			...settings,
 			attributes: {
 				...settings.attributes,
 				showModifiedDateWhenDifferent: {
 					type: 'boolean',
-					default: true,
+					default: false,
 				},
 				modifiedPrefix: {
 					type: 'string',
-					default: defaultModifiedPrefix,
+					default: '',
 				},
 				modifiedSuffix: {
 					type: 'string',
-					default: defaultModifiedSuffix,
+					default: '',
 				},
 				modifiedDateOnSeparateLine: {
 					type: 'boolean',
-					default: false,
+					default: true,
 				},
 				publishedPrefix: {
 					type: 'string',
