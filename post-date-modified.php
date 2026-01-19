@@ -90,7 +90,7 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		// Pass through Date block from 6.8 which has the "Display last modified date" setting enabled.
 		( 'modified' === ( $block['attrs']['displayType'] ?? null ) )
 		||
-		false === ( $block['attrs']['showModifiedDateWhenDifferent'] ?? true )
+		false === ( $block['attrs']['showModifiedDateWhenDifferent'] ?? false )
 		||
 		// Pass through Date block from 6.9 if it isn't for displaying the published date.
 		(
@@ -133,34 +133,34 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 	}
 
 	// Obtain the template for rendering the modified date.
-	$modified_prefix = $block['attrs']['modifiedPrefix'] ?? null;
-	$modified_suffix = $block['attrs']['modifiedSuffix'] ?? null;
-	if ( null === $modified_prefix && null === $modified_suffix ) {
-		/* translators: %s is the <time> element */
-		list( $modified_prefix, $modified_suffix ) = explode( '%s', __( '(Modified: %s)', 'post-date-modified' ) );
-	}
-	$published_prefix = $block['attrs']['publishedPrefix'] ?? null;
-	$published_suffix = $block['attrs']['publishedSuffix'] ?? null;
+	$modified_prefix  = $block['attrs']['modifiedPrefix'] ?? '';
+	$modified_suffix  = $block['attrs']['modifiedSuffix'] ?? '';
+	$published_prefix = $block['attrs']['publishedPrefix'] ?? '';
+	$published_suffix = $block['attrs']['publishedSuffix'] ?? '';
 
 	// Render the modified date after the published date.
 	$html = '';
-	if ( is_string( $published_suffix ) ) {
+	if ( is_string( $published_suffix ) && '' !== $published_suffix ) {
 		$html .= esc_html( $published_suffix );
 	}
-	if ( $block['attrs']['modifiedDateOnSeparateLine'] ?? false ) {
+	if ( $block['attrs']['modifiedDateOnSeparateLine'] ?? true ) {
 		$html .= '<br>';
 	} else {
 		$html .= ' ';
 	}
 	$html .= '<span class="modified">';
-	$html .= $modified_prefix;
+	if ( is_string( $modified_prefix ) ) {
+		$html .= $modified_prefix;
+	}
 	// See Microformat classes used at <https://github.com/WordPress/wordpress-develop/blob/ebd415b045a2b1bbeb4d227e890c78a15ff8d85e/src/wp-content/themes/twentynineteen/inc/template-tags.php#L17>.
 	$html .= sprintf(
 		'<time class="updated" datetime="%s">%s</time>',
 		esc_attr( (string) wp_date( 'c', $modified_timestamp ) ),
 		esc_html( $modified_date_formatted )
 	);
-	$html .= $modified_suffix;
+	if ( is_string( $modified_suffix ) ) {
+		$html .= $modified_suffix;
+	}
 	$html .= '</span>';
 
 	// Append the modified date to the end of the Date block's wrapper element.
@@ -216,7 +216,7 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 	}
 
 	// Add the published prefix.
-	if ( is_string( $published_prefix ) && $processor->seek( 'first_opening_tag' ) ) {
+	if ( is_string( $published_prefix ) && '' !== $published_prefix && $processor->seek( 'first_opening_tag' ) ) {
 		$processor->insert_after( esc_html( $published_prefix ) );
 		// TODO: Also add a published SPAN.created wrapper?
 	}
