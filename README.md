@@ -37,6 +37,24 @@ You may also install and update via [Git Updater](https://git-updater.com/) usin
 4. Select the `post-date-modified.zip` file on your system from step 1 and click **Install Now**.
 5. Click the **Activate Plugin** button.
 
+## Screenshots
+
+### Settings for prefix on published date and modified date
+
+![Settings for prefix on published date and modified date](./.wordpress-org/screenshot-1.png)
+
+### Frontend rendering of prefix on published date and modified date (when they differ)
+
+![Frontend rendering of prefix on published date and modified date (when they differ)](./.wordpress-org/screenshot-2.png)
+
+### Settings for prefix and suffix on modified date only with line break removed
+
+![Settings for prefix and suffix on modified date only with line break removed](./.wordpress-org/screenshot-3.png)
+
+### Frontend rendering for prefix and suffix on modified date only with line break removed
+
+![Frontend rendering for prefix and suffix on modified date only with line break removed](./.wordpress-org/screenshot-4.png)
+
 ## Changelog
 
 ### 1.0.0
