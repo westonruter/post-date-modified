@@ -150,7 +150,7 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 	}
 	$html .= '<span class="modified">';
 	if ( is_string( $modified_prefix ) ) {
-		$html .= $modified_prefix;
+		$html .= esc_html( $modified_prefix );
 	}
 	// See Microformat classes used at <https://github.com/WordPress/wordpress-develop/blob/ebd415b045a2b1bbeb4d227e890c78a15ff8d85e/src/wp-content/themes/twentynineteen/inc/template-tags.php#L17>.
 	$html .= sprintf(
@@ -159,7 +159,7 @@ function filter_block( $block_content, array $block, WP_Block $instance ): strin
 		esc_html( $modified_date_formatted )
 	);
 	if ( is_string( $modified_suffix ) ) {
-		$html .= $modified_suffix;
+		$html .= esc_html( $modified_suffix );
 	}
 	$html .= '</span>';
 
