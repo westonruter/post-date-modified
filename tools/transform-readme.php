@@ -74,7 +74,7 @@ $readme_txt = (string) preg_replace_callback(
 		// Delete lines with links, images, linked images (badges), or comments.
 		$input = trim(
 			(string) preg_replace(
-				'/^(
+				'~^(
 					# Markdown link.
 					\[[^]]+?]\([^)]+?\)
 					|
@@ -87,9 +87,12 @@ $readme_txt = (string) preg_replace_callback(
 					# HTML link.
 					<img[^>]+?>
 					|
+					# Linked HTML image.
+					<a[^>]+?><img[^>]+?></a>
+					|
 					# HTML comment.
 					<!--.+?-->
-				)$/mx',
+				)$~mx',
 				'',
 				$matches[0]
 			)
