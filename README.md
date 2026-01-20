@@ -22,7 +22,7 @@ To use:
 1. Open the Site Editor to edit a block template.
 2. Insert a Date block.
 3. In the block settings, click the “Transform to variation” button and select “Post Date”.
-4. A new “With Modified Date” panel appears in the settings. The toggle for to “Show modified date when different from published date.”
+4. A new “With Modified Date” panel appears in the settings. Enable the “Show modified date when different from published date” toggle.
 5. Configure the prefixes and suffixes for the published date and modified date when the two differ for the selected date format; also consider the toggle to show the published date on a separate line.
 
 ## Installation
