@@ -75,12 +75,19 @@ $readme_txt = (string) preg_replace_callback(
 		$input = trim(
 			(string) preg_replace(
 				'/^(
+					# Markdown link.
 					\[[^]]+?]\([^)]+?\)
 					|
-					\[?!\[[^]]+?]\([^)]+?\)(](.+?))?
+					# Markdown image.
+					!\[[^]]+?]\([^)]+?\)
 					|
+					# Linked Markdown image.
+					\[!\[[^]]+?]\([^)]+?\)]\([^)]+?\)
+					|
+					# HTML link.
 					<img[^>]+?>
 					|
+					# HTML comment.
 					<!--.+?-->
 				)$/mx',
 				'',
