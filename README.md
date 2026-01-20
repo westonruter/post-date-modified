@@ -11,6 +11,8 @@ Appends the modified date to the Post Date block when different from the publish
 **Stable tag:**   1.0.0  
 **License:**      [GPLv2 or later](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
 
+[Try it in Playground](https://playground.wordpress.net/?blueprint-url=https%3A%2F%2Fraw.githubusercontent.com%2Fwestonruter%2Fpost-date-modified%2Frefs%2Fheads%2Fmain%2F.wordpressorg%2Fblueprint%2Fblueprint.json)
+
 ## Description
 
 This plugin extends the Date block in core, specifically the "Post Date" variation of the Date block. When the modified date is different from the published date in the current date format, this extension allows the modified date to be appended to the end of the block. This allows the published date and the modified date to both be displayed in the same block. Settings are provided to add prefixes and suffixes for both the published date and the modified date when both are displayed. There is also a setting to display the modified date on a separate line.
