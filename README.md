@@ -17,7 +17,7 @@ This plugin extends the Date block in core, specifically the "Post Date" variati
 
 This is a prototype or stopgap for [gutenberg#53099](https://github.com/WordPress/gutenberg/issues/53099) (Post date: It is not clear that "display modified date" replaces the publishing date). See also [gutenberg#61920](https://github.com/WordPress/gutenberg/pull/61920) (Add prefix / suffix to Post Date block). What eventually lands in core will hopefully leverage “[shortblocks](https://github.com/WordPress/gutenberg/issues/73929)” so that the conditional prefixes and suffixes needn't be provided in a block settings panel.
 
-To use:
+### Usage
 
 1. Open the Site Editor to edit a block template.
 2. Insert a Date block.
