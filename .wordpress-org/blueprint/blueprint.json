@@ -1,0 +1,45 @@
+{
+	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
+	"landingPage": "/wp-admin/site-editor.php?p=%2Fwp_template%2Ftwentytwentyfive%2F%2Fhome&canvas=edit",
+	"login": true,
+	"features": {
+		"networking": true
+	},
+	"preferredVersions": {
+		"php": "8.1",
+		"wp": "latest"
+	},
+	"steps": [
+		{
+			"step": "setSiteOptions",
+			"options": {
+				"blogname": "Testing Post Date Block: Published & Modified"
+			}
+		},
+		{
+			"step": "wp-cli",
+			"command": "wp post update 1 --post_title='Recently Modified Post' --post_content=\"<!-- wp:paragraph --><p>This post was just modified. Assuming you are looking at the homepage template right now, select the Date block below and modify its settings so that the modified date is displayed when it differs from the published date. Save the template, and then navigate to the homepage to see how the Date block is updated to display the published date and the modified date both. Configure the prefix and suffix settings for the published and modified dates to disambiguate.</p><!-- /wp:paragraph -->\""
+		},
+		{
+			"step": "installTheme",
+			"themeData": {
+				"resource": "wordpress.org/themes",
+				"slug": "twentytwentyfive"
+			},
+			"options": {
+				"activate": true
+			}
+		},
+		{
+			"step": "installPlugin",
+			"pluginData": {
+				"resource": "url",
+				"url": "https://github.com/westonruter/post-date-modified/archive/refs/heads/main.zip"
+			},
+			"options": {
+				"activate": true,
+				"targetFolderName": "post-date-modified"
+			}
+		}
+	]
+}
