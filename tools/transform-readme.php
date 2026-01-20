@@ -70,7 +70,7 @@ $readme_txt = (string) preg_replace_callback(
 // Transform the sections above the description.
 $readme_txt = (string) preg_replace_callback(
 	'/^.+?(?=## Description)/s',
-	static function ( $matches ) {
+	static function ( array $matches ): string {
 		// Delete lines with links, images, linked images (badges), or comments.
 		$input = trim(
 			(string) preg_replace(
