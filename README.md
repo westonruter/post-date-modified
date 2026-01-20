@@ -11,7 +11,7 @@ Appends the modified date to the Post Date block when different from the publish
 **Stable tag:**   1.0.0  
 **License:**      [GPLv2 or later](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
 
-[Try it in Playground](https://playground.wordpress.net/?blueprint-url=https%3A%2F%2Fraw.githubusercontent.com%2Fwestonruter%2Fpost-date-modified%2Frefs%2Fheads%2Fmain%2F.wordpressorg%2Fblueprint%2Fblueprint.json)
+[Try it in Playground](https://playground.wordpress.net/?blueprint-url=https%3A%2F%2Fraw.githubusercontent.com%2Fwestonruter%2Fpost-date-modified%2Fmain%2F.wordpressorg%2Fblueprint%2Fblueprint.json)
 
 ## Description
 
