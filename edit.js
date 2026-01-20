@@ -148,6 +148,17 @@
 		return createElement(
 			Fragment,
 			null,
+
+			createElement( ToggleControl, {
+				__nextHasNoMarginBottom: true,
+				label: __( 'Show on separate line', 'post-date-modified' ),
+				checked: modifiedDateOnSeparateLine,
+				onChange: ( /** @type {boolean} */ value ) =>
+					setAttributes( {
+						modifiedDateOnSeparateLine: value,
+					} ),
+			} ),
+
 			createElement( PrefixSuffixControls, {
 				prefix: modifiedPrefix,
 				suffix: modifiedSuffix,
@@ -169,16 +180,6 @@
 				null,
 				__( 'Published Date Display', 'post-date-modified' )
 			),
-
-			createElement( ToggleControl, {
-				__nextHasNoMarginBottom: true,
-				label: __( 'Show on separate line', 'post-date-modified' ),
-				checked: modifiedDateOnSeparateLine,
-				onChange: ( /** @type {boolean} */ value ) =>
-					setAttributes( {
-						modifiedDateOnSeparateLine: value,
-					} ),
-			} ),
 
 			createElement( PrefixSuffixControls, {
 				prefix: publishedPrefix,
