@@ -7,6 +7,8 @@
 		ToggleControl,
 		Flex,
 		FlexItem,
+		Notice,
+		PanelRow,
 		__experimentalDivider: Divider,
 		__experimentalHeading: Heading,
 	} = wp.components;
@@ -193,7 +195,20 @@
 					setAttributes( {
 						publishedSuffix: value,
 					} ),
-			} )
+			} ),
+
+			createElement(
+				PanelRow,
+				null,
+				createElement(
+					Notice,
+					{ status: 'info', isDismissible: false },
+					__(
+						'Editor preview is not currently implemented. View saved changes on frontend.',
+						'post-date-modified'
+					)
+				)
+			)
 		);
 	};
 
