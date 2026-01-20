@@ -81,13 +81,13 @@ $readme_txt = (string) preg_replace_callback(
 					# Markdown image.
 					!\[[^]]+?]\([^)]+?\)
 					|
-					# Linked Markdown image.
+					# Markdown image link.
 					\[!\[[^]]+?]\([^)]+?\)]\([^)]+?\)
 					|
-					# HTML link.
+					# HTML image.
 					<img[^>]+?>
 					|
-					# Linked HTML image.
+					# HTML image link.
 					<a[^>]+?><img[^>]+?></a>
 					|
 					# HTML comment.
