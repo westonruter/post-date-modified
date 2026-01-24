@@ -108,25 +108,26 @@ async function getSchemaDraft( schemaUrl ) {
  * Validates a JSON file against its schema.
  *
  * @param {string} filePath Path to the JSON file.
+ * @return {Promise<boolean>} Whether the file is valid.
  */
 async function validateFile( filePath ) {
 	const absolutePath = path.resolve( process.cwd(), filePath );
 	if ( ! fs.existsSync( absolutePath ) ) {
 		console.error( `File not found: ${ filePath }` );
-		process.exit( 1 );
+		return false;
 	}
 
 	const content = fs.readFileSync( absolutePath, 'utf8' );
 
-	const maxBlueprintSizeKB = 100;
+	const maxBlueprintSizeKB = 1000; // See <https://github.com/WordPress/wordpress.org/blob/e76f2913139cd2c7d9fd26895dda58685d16aa81/wordpress.org/public_html/wp-content/plugins/plugin-directory/cli/class-import.php#L809>.
 	if (
 		filePath === '.wordpress-org/blueprint/blueprint.json' &&
 		content.length > maxBlueprintSizeKB * 1024
 	) {
 		console.error(
-			`Error: ${ filePath } is too large (${ content.length } bytes). Max allowed is ${ maxBlueprintSizeKB } KB per <https://github.com/WordPress/wordpress.org/blob/e76f2913139cd2c7d9fd26895dda58685d16aa81/wordpress.org/public_html/wp-content/plugins/plugin-directory/cli/class-import.php#L809>.`
+			`Error: ${ filePath } is too large (${ content.length } bytes). Max allowed is ${ maxBlueprintSizeKB } KB.`
 		);
-		process.exit( 1 );
+		return false;
 	}
 
 	let data;
@@ -138,43 +139,43 @@ async function validateFile( filePath ) {
 				`Error parsing JSON in ${ filePath }: ${ error.message }`
 			);
 		}
-		process.exit( 1 );
+		return false;
 	}
 
-	if ( ! data.$schema ) {
-		// If no schema is defined, we skip validation for now.
-		return;
-	}
+	if ( data.$schema ) {
+		console.log(
+			`Validating ${ filePath } against schema: ${ data.$schema }`
+		);
+		try {
+			const draft = await getSchemaDraft( data.$schema );
+			const ajvInstance = draft === 'draft-04' ? ajv4 : ajv7;
+			const validate = await ajvInstance.compileAsync( {
+				$ref: data.$schema,
+			} );
+			const valid = validate( data );
 
-	console.log( `Validating ${ filePath } against schema: ${ data.$schema }` );
-
-	try {
-		const draft = await getSchemaDraft( data.$schema );
-		const ajvInstance = draft === 'draft-04' ? ajv4 : ajv7;
-		const validate = await ajvInstance.compileAsync( {
-			$ref: data.$schema,
-		} );
-		const valid = validate( data );
-
-		if ( ! valid ) {
-			console.error( `Validation failed for ${ filePath }:` );
-			if ( validate.errors ) {
-				validate.errors.forEach( ( error ) => {
-					console.error(
-						`- ${ error.instancePath } ${ error.message }`
-					);
-				} );
+			if ( ! valid ) {
+				console.error( `Validation failed for ${ filePath }:` );
+				if ( validate.errors ) {
+					validate.errors.forEach( ( error ) => {
+						console.error(
+							`- ${ error.instancePath } ${ error.message }`
+						);
+					} );
+				}
+				return false;
 			}
-			process.exit( 1 );
+		} catch ( error ) {
+			if ( error instanceof Error ) {
+				console.error(
+					`Error validating ${ filePath }: ${ error.message }`
+				);
+			}
+			return false;
 		}
-	} catch ( error ) {
-		if ( error instanceof Error ) {
-			console.error(
-				`Error validating ${ filePath }: ${ error.message }`
-			);
-		}
-		process.exit( 1 );
 	}
+
+	return true;
 }
 
 const args = process.argv.slice( 2 );
@@ -196,7 +197,15 @@ const patterns = args.length > 0 ? args : [ '**/*.json' ];
 		process.exit( 1 );
 	}
 
+	let hasError = false;
 	for ( const file of files ) {
-		await validateFile( file );
+		const isValid = await validateFile( file );
+		if ( ! isValid ) {
+			hasError = true;
+		}
+	}
+
+	if ( hasError ) {
+		process.exit( 1 );
 	}
 } )();
