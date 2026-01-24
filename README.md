@@ -36,19 +36,17 @@ This is a prototype or stopgap for [gutenberg#53099](https://github.com/WordPres
 
 _Note: Not yet available on WordPress.org, but it has been submitted to the plugin directory._
 
-<!--
 ### Automatic
 
 1. Visit **Plugins > Add New** in the WordPress Admin.
 2. Search for **Post Date Block: Published & Modified**.
 3. Install and activate the **Post Date Block: Published & Modified** plugin.
--->
 
-You may <!--also--> install and update via [Git Updater](https://git-updater.com/) using the [plugin's GitHub URL](https://github.com/westonruter/post-date-modified).
+You may also install and update via [Git Updater](https://git-updater.com/) using the [plugin's GitHub URL](https://github.com/westonruter/post-date-modified).
 
-<!--### Manual-->
+### Manual
 
-1. Download the plugin ZIP <!--either [from WordPress.org](https://downloads.wordpress.org/plugin/post-date-modified.zip) or--> [from GitHub](https://github.com/westonruter/post-date-modified/archive/refs/heads/main.zip). Alternatively, if you have a local clone of the repo, run `npm run plugin-zip`. (No building of the editor JavaScript is required.)
+1. Download the plugin ZIP either [from WordPress.org](https://downloads.wordpress.org/plugin/post-date-modified.zip) or [from GitHub](https://github.com/westonruter/post-date-modified/archive/refs/heads/main.zip). Alternatively, if you have a local clone of the repo, run `npm run plugin-zip`. (No building of the editor JavaScript is required.)
 2. Visit **Plugins > Add New Plugin** in the WordPress Admin.
 3. Click **Upload Plugin**.
 4. Select the `post-date-modified.zip` file on your system from step 1 and click **Install Now**.
