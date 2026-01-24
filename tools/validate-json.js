@@ -117,6 +117,18 @@ async function validateFile( filePath ) {
 	}
 
 	const content = fs.readFileSync( absolutePath, 'utf8' );
+
+	const maxBlueprintSizeKB = 100;
+	if (
+		filePath === '.wordpress-org/blueprint/blueprint.json' &&
+		content.length > maxBlueprintSizeKB * 1024
+	) {
+		console.error(
+			`Error: ${ filePath } is too large (${ content.length } bytes). Max allowed is ${ maxBlueprintSizeKB } KB per <https://github.com/WordPress/wordpress.org/blob/e76f2913139cd2c7d9fd26895dda58685d16aa81/wordpress.org/public_html/wp-content/plugins/plugin-directory/cli/class-import.php#L809>.`
+		);
+		process.exit( 1 );
+	}
+
 	let data;
 	try {
 		data = JSON.parse( content );
