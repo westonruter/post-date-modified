@@ -6,6 +6,7 @@ const config = {
 		'wp-scripts lint-js --ignore-path=.gitignore',
 		() => 'npx tsc --allowJs --noEmit',
 	],
+	'**/*.json': [ 'npm run lint:json' ],
 	'*.css': [ 'npm run lint:css' ],
 	'composer.{json,lock}': [
 		() => 'composer validate --strict --no-check-all',
