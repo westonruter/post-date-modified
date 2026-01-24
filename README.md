@@ -34,8 +34,6 @@ This is a prototype or stopgap for [gutenberg#53099](https://github.com/WordPres
 
 ## Installation
 
-_Note: Not yet available on WordPress.org, but it has been submitted to the plugin directory._
-
 ### Automatic
 
 1. Visit **Plugins > Add New** in the WordPress Admin.
