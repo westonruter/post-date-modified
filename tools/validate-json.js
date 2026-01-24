@@ -117,7 +117,7 @@ async function validateFile( filePath ) {
 		return false;
 	}
 
-	const content = fs.readFileSync( absolutePath, 'utf8' );
+	const content = await fs.promises.readFile( absolutePath, 'utf8' );
 
 	const maxBlueprintSizeKB = 1000; // See <https://github.com/WordPress/wordpress.org/blob/e76f2913139cd2c7d9fd26895dda58685d16aa81/wordpress.org/public_html/wp-content/plugins/plugin-directory/cli/class-import.php#L809>.
 	if (
