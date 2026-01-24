@@ -38,7 +38,7 @@ const schemaCache = new Map();
 function createAjv( AjvConstructor ) {
 	const ajv = new AjvConstructor( {
 		allErrors: true,
-		strict: false,
+		strict: false, // Needed due to Blueprint JSON Schema error: strict mode: use allowUnionTypes to allow union type keyword at "https://playground.wordpress.net/blueprint-schema.json#/definitions/PHPConstants/additionalProperties" (strictTypes).
 		loadSchema: fetchSchema,
 	} );
 
