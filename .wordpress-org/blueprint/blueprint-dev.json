@@ -1,8 +1,10 @@
 {
 	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
 	"landingPage": "/wp-admin/site-editor.php?p=%2Fwp_template%2Ftwentytwentyfive%2F%2Fhome&canvas=edit",
-	"plugins": [ "post-date-modified" ],
 	"login": true,
+	"features": {
+		"networking": true
+	},
 	"preferredVersions": {
 		"php": "8.1",
 		"wp": "latest"
@@ -22,6 +24,17 @@
 			},
 			"options": {
 				"activate": true
+			}
+		},
+		{
+			"step": "installPlugin",
+			"pluginData": {
+				"resource": "url",
+				"url": "https://github.com/westonruter/post-date-modified/archive/main.zip"
+			},
+			"options": {
+				"activate": true,
+				"targetFolderName": "post-date-modified"
 			}
 		},
 		{

@@ -12,7 +12,7 @@ Appends the modified date to the Post Date block when different from the publish
 **License:**      [GPLv2 or later](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
 
 <!-- markdownlint-disable-next-line no-inline-html -->
-<a href="https://playground.wordpress.net/?blueprint-url=https%3A%2F%2Fraw.githubusercontent.com%2Fwestonruter%2Fpost-date-modified%2Fmain%2F.wordpress-org%2Fblueprint%2Fblueprint.json"><img src=".wordpress-org/playground-preview-button.svg" alt="Try it in Playground" width="220" height="51"></a>
+<a href="https://playground.wordpress.net/?blueprint-url=https%3A%2F%2Fraw.githubusercontent.com%2Fwestonruter%2Fpost-date-modified%2Fmain%2F.wordpress-org%2Fblueprint%2Fblueprint-dev.json"><img src=".wordpress-org/playground-preview-button.svg" alt="Try it in Playground" width="220" height="51"></a>
 
 ## Description
 
@@ -34,21 +34,17 @@ This is a prototype or stopgap for [gutenberg#53099](https://github.com/WordPres
 
 ## Installation
 
-_Note: Not yet available on WordPress.org, but it has been submitted to the plugin directory._
-
-<!--
 ### Automatic
 
 1. Visit **Plugins > Add New** in the WordPress Admin.
 2. Search for **Post Date Block: Published & Modified**.
 3. Install and activate the **Post Date Block: Published & Modified** plugin.
--->
 
-You may <!--also--> install and update via [Git Updater](https://git-updater.com/) using the [plugin's GitHub URL](https://github.com/westonruter/post-date-modified).
+You may also install and update via [Git Updater](https://git-updater.com/) using the [plugin's GitHub URL](https://github.com/westonruter/post-date-modified).
 
-<!--### Manual-->
+### Manual
 
-1. Download the plugin ZIP <!--either [from WordPress.org](https://downloads.wordpress.org/plugin/post-date-modified.zip) or--> [from GitHub](https://github.com/westonruter/post-date-modified/archive/refs/heads/main.zip). Alternatively, if you have a local clone of the repo, run `npm run plugin-zip`. (No building of the editor JavaScript is required.)
+1. Download the plugin ZIP either [from WordPress.org](https://downloads.wordpress.org/plugin/post-date-modified.zip) or [from GitHub](https://github.com/westonruter/post-date-modified/archive/refs/heads/main.zip). Alternatively, if you have a local clone of the repo, run `npm run plugin-zip`. (No building of the editor JavaScript is required.)
 2. Visit **Plugins > Add New Plugin** in the WordPress Admin.
 3. Click **Upload Plugin**.
 4. Select the `post-date-modified.zip` file on your system from step 1 and click **Install Now**.
