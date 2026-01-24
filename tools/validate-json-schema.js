@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 /* eslint-disable no-console */
+/* eslint-disable @wordpress/no-setting-ds-tokens, @wordpress/no-unknown-ds-tokens */
 
 /**
  * Internal dependencies
@@ -120,9 +121,11 @@ async function validateFile( filePath ) {
 	try {
 		data = JSON.parse( content );
 	} catch ( error ) {
-		console.error(
-			`Error parsing JSON in ${ filePath }: ${ error.message }`
-		);
+		if ( error instanceof Error ) {
+			console.error(
+				`Error parsing JSON in ${ filePath }: ${ error.message }`
+			);
+		}
 		process.exit( 1 );
 	}
 
@@ -143,13 +146,21 @@ async function validateFile( filePath ) {
 
 		if ( ! valid ) {
 			console.error( `Validation failed for ${ filePath }:` );
-			validate.errors.forEach( ( error ) => {
-				console.error( `- ${ error.instancePath } ${ error.message }` );
-			} );
+			if ( validate.errors ) {
+				validate.errors.forEach( ( error ) => {
+					console.error(
+						`- ${ error.instancePath } ${ error.message }`
+					);
+				} );
+			}
 			process.exit( 1 );
 		}
 	} catch ( error ) {
-		console.error( `Error validating ${ filePath }: ${ error.message }` );
+		if ( error instanceof Error ) {
+			console.error(
+				`Error validating ${ filePath }: ${ error.message }`
+			);
+		}
 		process.exit( 1 );
 	}
 }
