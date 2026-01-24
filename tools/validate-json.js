@@ -4,18 +4,14 @@
 /* eslint-disable @wordpress/no-setting-ds-tokens, @wordpress/no-unknown-ds-tokens */
 
 /**
- * Internal dependencies
- */
-const fs = require( 'fs' );
-const path = require( 'path' );
-
-/**
  * External dependencies
  */
-const Ajv7 = require( 'ajv' ).default;
 const Ajv4 = require( 'ajv-draft-04' ).default;
+const Ajv7 = require( 'ajv' ).default;
 const addFormats = require( 'ajv-formats' ).default;
 const fg = require( 'fast-glob' );
+const fs = require( 'fs' );
+const path = require( 'path' );
 
 /**
  * @typedef {import('ajv').default} Ajv
