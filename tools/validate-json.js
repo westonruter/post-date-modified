@@ -121,7 +121,7 @@ async function validateFile( filePath ) {
 
 	const maxBlueprintSizeKB = 1000; // See <https://github.com/WordPress/wordpress.org/blob/e76f2913139cd2c7d9fd26895dda58685d16aa81/wordpress.org/public_html/wp-content/plugins/plugin-directory/cli/class-import.php#L809>.
 	if (
-		filePath === '.wordpress-org/blueprint/blueprint.json' &&
+		filePath === '.wordpress-org/blueprints/blueprint.json' &&
 		content.length > maxBlueprintSizeKB * 1024
 	) {
 		console.error(
