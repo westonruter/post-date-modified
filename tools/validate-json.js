@@ -101,7 +101,9 @@ async function getSchemaDraft( schemaUrl ) {
 	const schema = await fetchSchema( schemaUrl );
 	const draft = typeof schema.$schema === 'string' ? schema.$schema : '';
 	// Default to 'default' (modern Ajv) for other cases.
-	return draft.includes( '//json-schema.org/draft-04/schema' ) ? 'draft-04' : 'default';
+	return draft.includes( '//json-schema.org/draft-04/schema' )
+		? 'draft-04'
+		: 'default';
 }
 
 /**
@@ -117,20 +119,20 @@ async function validateFile( filePath ) {
 		return false;
 	}
 
-	const content = await fs.promises.readFile( absolutePath, 'utf8' );
-
-	const maxBlueprintSizeKB = 1000; // See <https://github.com/WordPress/wordpress.org/blob/e76f2913139cd2c7d9fd26895dda58685d16aa81/wordpress.org/public_html/wp-content/plugins/plugin-directory/cli/class-import.php#L809>.
+	const maxBlueprintSizeKB = 100; // See <https://github.com/WordPress/wordpress.org/blob/e76f2913139cd2c7d9fd26895dda58685d16aa81/wordpress.org/public_html/wp-content/plugins/plugin-directory/cli/class-import.php#L809>.
 	if (
-		/^\.wordpress-org\/blueprints\/blueprint[-\w]*\.json$/.test(
-			filePath
-		) &&
-		content.length > maxBlueprintSizeKB * 1024
+		/^\.wordpress-org\/blueprints\/blueprint[-\w]*\.json$/.test( filePath )
 	) {
-		console.error(
-			`Error: ${ filePath } is too large (${ content.length } bytes). Max allowed is ${ maxBlueprintSizeKB } KB.`
-		);
-		return false;
+		const stats = await fs.promises.stat( absolutePath );
+		if ( stats.size > maxBlueprintSizeKB * 1024 ) {
+			console.error(
+				`Error: ${ filePath } is too large (${ stats.size } bytes). Max allowed is ${ maxBlueprintSizeKB } KB.`
+			);
+			return false;
+		}
 	}
+
+	const content = await fs.promises.readFile( absolutePath, 'utf8' );
 
 	let data;
 	try {
