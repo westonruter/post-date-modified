@@ -114,7 +114,9 @@ async function getSchemaDraft( schemaUrl ) {
  */
 async function validateFile( filePath ) {
 	const absolutePath = path.resolve( process.cwd(), filePath );
-	if ( ! fs.existsSync( absolutePath ) ) {
+	try {
+		await fs.promises.access( absolutePath, fs.constants.F_OK );
+	} catch ( error ) {
 		console.error( `File not found: ${ filePath }` );
 		return false;
 	}
