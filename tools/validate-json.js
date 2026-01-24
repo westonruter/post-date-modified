@@ -210,4 +210,7 @@ const patterns = args.length > 0 ? args : [ '**/*.json' ];
 	if ( hasError ) {
 		process.exit( 1 );
 	}
-} )();
+} )().catch( ( error ) => {
+	console.error( 'Unexpected error during JSON validation:', error );
+	process.exit( 1 );
+} );
