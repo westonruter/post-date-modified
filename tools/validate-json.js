@@ -123,8 +123,9 @@ async function validateFile( filePath ) {
 	) {
 		const stats = await fs.promises.stat( absolutePath );
 		if ( stats.size > maxBlueprintSizeKB * 1024 ) {
+			const sizeKB = stats.size / 1024;
 			console.error(
-				`Error: ${ filePath } is too large (${ stats.size } bytes). Max allowed is ${ maxBlueprintSizeKB } KB.`
+				`Error: ${ filePath } is too large (${ sizeKB.toFixed( 2 ) } KB, ${ stats.size } bytes). Max allowed is ${ maxBlueprintSizeKB } KB.`
 			);
 			return false;
 		}
