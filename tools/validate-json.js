@@ -175,6 +175,10 @@ async function validateFile( filePath ) {
 			}
 			return false;
 		}
+	} else {
+		console.log(
+			`No $schema property found in ${ filePath }; skipping schema validation (syntax only).`
+		);
 	}
 
 	return true;
