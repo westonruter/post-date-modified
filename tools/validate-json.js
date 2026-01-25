@@ -75,16 +75,27 @@ async function fetchSchema( schemaUrl ) {
 		return schemaCache.get( schemaUrl );
 	}
 
-	const response = await fetch( schemaUrl );
-	if ( ! response.ok ) {
-		throw new Error(
-			`Failed to fetch schema from ${ schemaUrl }: ${ response.statusText }`
-		);
-	}
-	const schema = await response.json();
-	schemaCache.set( schemaUrl, schema );
+	const controller = new AbortController();
 
-	return schema;
+	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
+	const timeout = setTimeout( () => controller.abort(), 5000 );
+
+	try {
+		const response = await fetch( schemaUrl, {
+			signal: controller.signal,
+		} );
+		if ( ! response.ok ) {
+			throw new Error(
+				`Failed to fetch schema from ${ schemaUrl }: ${ response.statusText }`
+			);
+		}
+		const schema = await response.json();
+		schemaCache.set( schemaUrl, schema );
+
+		return schema;
+	} finally {
+		clearTimeout( timeout );
+	}
 }
 
 /**
@@ -125,7 +136,11 @@ async function validateFile( filePath ) {
 		if ( stats.size > maxBlueprintSizeKB * 1024 ) {
 			const sizeKB = stats.size / 1024;
 			console.error(
-				`Error: ${ filePath } is too large (${ sizeKB.toFixed( 2 ) } KB, ${ stats.size } bytes). Max allowed is ${ maxBlueprintSizeKB } KB.`
+				`Error: ${ filePath } is too large (${ sizeKB.toFixed(
+					2
+				) } KB, ${
+					stats.size
+				} bytes). Max allowed is ${ maxBlueprintSizeKB } KB.`
 			);
 			return false;
 		}
