@@ -204,20 +204,22 @@ async function validateFile( filePath ) {
 			if ( ! valid ) {
 				if ( validate.errors ) {
 					validate.errors.forEach( ( error ) => {
-						console.error( ' ❌ Error:', error );
+						console.error( `${ filePath }: ❌ Error:`, error );
 					} );
 				} else {
-					console.error( ` ❌ Unknown validation error` );
+					console.error(
+						`${ filePath }: ❌ Unknown validation error`
+					);
 				}
 				return false;
 			}
 		} catch ( error ) {
 			if ( error instanceof Error ) {
 				console.error(
-					` ❌ Error validating ${ filePath }: ${ error.message }`
+					`${ filePath }: ❌ Error validating ${ filePath }: ${ error.message }`
 				);
 			} else {
-				console.error( ` ❌ Unknown Ajv error:`, error );
+				console.error( `${ filePath }: ❌ Unknown Ajv error:`, error );
 			}
 			return false;
 		}
@@ -246,7 +248,9 @@ const patterns = args.length > 0 ? args : [ '**/*.json' ];
 
 	if ( files.length === 0 ) {
 		if ( args.length > 0 ) {
-			console.error( 'No JSON files found matching the provided patterns.' );
+			console.error(
+				'No JSON files found matching the provided patterns.'
+			);
 			process.exit( 1 );
 		} else {
 			console.warn(
