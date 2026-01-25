@@ -195,9 +195,6 @@ async function validateFile( filePath ) {
 	}
 
 	if ( data.$schema ) {
-		console.log(
-			`${ filePath }: validating against schema: ${ data.$schema }`
-		);
 		try {
 			const draft = await getSchemaDraft( data.$schema );
 			const ajvInstance = draft === 'draft-04' ? ajv4 : ajv;
@@ -228,6 +225,7 @@ async function validateFile( filePath ) {
 			}
 			return false;
 		}
+		console.log( `${ filePath }: Valid against <${ data.$schema }>. ✅` );
 	} else {
 		console.log(
 			`${ filePath }: Skipping schema validation since no $schema property found. Syntax validated only. ✅`
