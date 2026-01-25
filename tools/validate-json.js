@@ -6,15 +6,11 @@
  * External dependencies
  */
 const Ajv4 = require( 'ajv-draft-04' ).default;
-const Ajv7 = require( 'ajv' ).default;
+const Ajv = require( 'ajv' ).default;
 const addFormats = require( 'ajv-formats' ).default;
 const fg = require( 'fast-glob' );
 const fs = require( 'fs' );
 const path = require( 'path' );
-
-/**
- * @typedef {import('ajv').default} Ajv
- */
 
 /**
  * @typedef {Object} JSONSchema
@@ -68,7 +64,7 @@ function createAjv( AjvConstructor ) {
 	return ajv;
 }
 
-const ajv7 = createAjv( Ajv7 );
+const ajv = createAjv( Ajv );
 const ajv4 = createAjv( Ajv4 );
 
 /**
@@ -204,7 +200,7 @@ async function validateFile( filePath ) {
 		);
 		try {
 			const draft = await getSchemaDraft( data.$schema );
-			const ajvInstance = draft === 'draft-04' ? ajv4 : ajv7;
+			const ajvInstance = draft === 'draft-04' ? ajv4 : ajv;
 			const validate = await ajvInstance.compileAsync( {
 				$ref: data.$schema,
 			} );
