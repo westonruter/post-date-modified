@@ -75,6 +75,15 @@ async function fetchSchema( schemaUrl ) {
 		return schemaCache.get( schemaUrl );
 	}
 
+	if (
+		! schemaUrl.startsWith( 'https://' ) &&
+		! schemaUrl.startsWith( 'http://json-schema.org/' )
+	) {
+		throw new Error(
+			`Schema URL must start with https:// (or be http://json-schema.org/): ${ schemaUrl }`
+		);
+	}
+
 	const controller = new AbortController();
 
 	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
