@@ -17,6 +17,14 @@ const path = require( 'path' );
  * @typedef {import('ajv').default} Ajv
  */
 
+/**
+ * @typedef {Object} JSONSchema
+ * @property {string} $schema Schema URL.
+ */
+
+/**
+ * @type {Map<string, JSONSchema>}
+ */
 const schemaCache = new Map();
 
 /**
@@ -68,11 +76,12 @@ const ajv4 = createAjv( Ajv4 );
  * Fetches a JSON schema from a URL.
  *
  * @param {string} schemaUrl URL of the JSON schema.
- * @return {Promise<any>} The JSON schema object.
+ * @return {Promise<JSONSchema>} The JSON schema object.
  */
 async function fetchSchema( schemaUrl ) {
-	if ( schemaCache.has( schemaUrl ) ) {
-		return schemaCache.get( schemaUrl );
+	const cachedSchema = schemaCache.get( schemaUrl );
+	if ( cachedSchema ) {
+		return cachedSchema;
 	}
 
 	if (
@@ -99,6 +108,16 @@ async function fetchSchema( schemaUrl ) {
 			);
 		}
 		const schema = await response.json();
+		if (
+			typeof schema !== 'object' ||
+			schema === null ||
+			Array.isArray( schema ) ||
+			typeof schema.$schema !== 'string'
+		) {
+			throw new Error(
+				`Schema from ${ schemaUrl } is not an JSON Schema object.`
+			);
+		}
 		schemaCache.set( schemaUrl, schema );
 
 		return schema;
