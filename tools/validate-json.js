@@ -166,7 +166,16 @@ async function validateFile( filePath ) {
 				return false;
 			}
 		} catch ( error ) {
-			console.error( `${ filePath }: Unable to get file size. ❌` );
+			if ( error instanceof Error ) {
+				console.error(
+					`${ filePath }: ❌ Unable to get file size: ${ error.message }`
+				);
+			} else {
+				console.error(
+					`${ filePath }: ❌ Unable to get file size:`,
+					error
+				);
+			}
 			return false;
 		}
 	}
