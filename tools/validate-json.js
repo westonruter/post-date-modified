@@ -159,9 +159,9 @@ async function validateFile( filePath ) {
 			if ( stats.size > maxBlueprintSizeKB * 1024 ) {
 				const sizeKB = stats.size / 1024;
 				console.error(
-					`${ filePath }: Blueprint is too large at (${ sizeKB.toFixed(
+					`${ filePath }: Blueprint is too large at ${ sizeKB.toFixed(
 						2
-					) } KB). Max allowed is ${ maxBlueprintSizeKB } KB. ❌`
+					) } KB. Max allowed is ${ maxBlueprintSizeKB } KB. ❌`
 				);
 				return false;
 			}
