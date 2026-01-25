@@ -149,34 +149,32 @@ async function getSchemaDraft( schemaUrl ) {
  */
 async function validateFile( filePath ) {
 	const absolutePath = path.resolve( process.cwd(), filePath );
-	try {
-		await fs.promises.access( absolutePath, fs.constants.F_OK );
-	} catch ( error ) {
-		console.error( `File not found: ${ filePath }` );
-		return false;
-	}
 
 	const maxBlueprintSizeKB = 100; // See <https://github.com/WordPress/wordpress.org/blob/e76f2913139cd2c7d9fd26895dda58685d16aa81/wordpress.org/public_html/wp-content/plugins/plugin-directory/cli/class-import.php#L809>.
 	if (
 		// See <https://github.com/WordPress/wordpress.org/blob/e76f2913139cd2c7d9fd26895dda58685d16aa81/wordpress.org/public_html/wp-content/plugins/plugin-directory/cli/class-import.php#L860> for the pattern of which blueprints are considered.
 		/^\.wordpress-org\/blueprints\/blueprint[\w-]*\.json$/.test( filePath )
 	) {
-		const stats = await fs.promises.stat( absolutePath );
-		if ( stats.size > maxBlueprintSizeKB * 1024 ) {
-			const sizeKB = stats.size / 1024;
-			console.error(
-				`${ filePath }: Blueprint is too large at (${ sizeKB.toFixed(
-					2
-				) } KB). Max allowed is ${ maxBlueprintSizeKB } KB. ❌`
-			);
+		try {
+			const stats = await fs.promises.stat( absolutePath );
+			if ( stats.size > maxBlueprintSizeKB * 1024 ) {
+				const sizeKB = stats.size / 1024;
+				console.error(
+					`${ filePath }: Blueprint is too large at (${ sizeKB.toFixed(
+						2
+					) } KB). Max allowed is ${ maxBlueprintSizeKB } KB. ❌`
+				);
+				return false;
+			}
+		} catch ( error ) {
+			console.error( `${ filePath }: Unable to get file size. ❌` );
 			return false;
 		}
 	}
 
-	const content = await fs.promises.readFile( absolutePath, 'utf8' );
-
 	let data;
 	try {
+		const content = await fs.promises.readFile( absolutePath, 'utf8' );
 		data = JSON.parse( content );
 	} catch ( error ) {
 		if ( error instanceof Error ) {
