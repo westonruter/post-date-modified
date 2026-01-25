@@ -4,8 +4,7 @@ This `AGENTS.md` file provides essential context and instructions for working wi
 
 ## Project Overview
 
-* **Type:** WordPress Plugin Boilerplate
-* **Primary Languages:** PHP (7.4+), JavaScript (with TypeScript in JSDoc), CSS
+* **Primary Languages:** PHP (7.4+), JavaScript (ES modules with TypeScript in JSDoc), CSS
 * **Frameworks/Tools:** WordPress (6.9+), Composer, Node.js (npm), GitHub Actions
 
 ## Environment Setup
