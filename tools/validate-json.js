@@ -216,7 +216,7 @@ async function validateFile( filePath ) {
 		} catch ( error ) {
 			if ( error instanceof Error ) {
 				console.error(
-					`${ filePath }: ❌ Error validating ${ filePath }: ${ error.message }`
+					`${ filePath }: ❌ Error validating JSON: ${ error.message }`
 				);
 			} else {
 				console.error( `${ filePath }: ❌ Unknown Ajv error:`, error );
