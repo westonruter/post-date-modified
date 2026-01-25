@@ -66,6 +66,6 @@ All PHP files should have a namespace which coincides with the `@package` tag in
 
 All JavaScript code should be written with JSDoc comments. All function parameters, return values, and other types should use [TypeScript in JSDoc](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html).
 
-JavaScript code is written using ES modules. This JS code must be runnable as-is without having to go through a build step, so it must be plain JavaScript and not TypeScript. The project _may_ also distribute minified versions of these JS files.
+JavaScript code is written using ES modules (except for node scripts which may use CommonJS modules). This JS code must be runnable as-is without having to go through a build step, so it must be plain JavaScript and not TypeScript. The project _may_ also distribute minified versions of these JS files.
 
 Never render HTML `script` markup directly. Always use the relevant APIs in WordPress for adding scripts, including `wp_enqueue_script()`, `wp_add_inline_script()`, `wp_localize_script()`, `wp_print_script_tag()`, `wp_print_inline_script_tag()`, `wp_enqueue_script_module()` among others. Since script modules are used, new scripts should normally have a `type="module"` when printing via `wp_print_inline_script_tag()` and when an external script is used, then `wp_enqueue_script_module()` is preferred.

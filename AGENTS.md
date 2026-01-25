@@ -60,7 +60,7 @@ See [style guide](./.gemini/styleguide.md) for more.
 
 * **Namespacing:** All PHP code is namespaced under `PostDateModified`.
 * **Testing:** Relies heavily on static analysis (PHPStan, ESLint, Stylelint) to ensure code quality.
-* **Plain JavaScript:** Do not write TypeScript, but rather use features from modern JavaScript (e.g. ES11) and add JSDoc which contains TypeScript types. There should be no build step required to run the plugin.
+* **Plain JavaScript:** Do not write TypeScript, but rather use features from modern JavaScript (e.g. ES11) and add JSDoc which contains TypeScript types. There should be no build step required to run the plugin. Use ES modules as much as possible, especially in the browser; node scripts _may_ use CommonJS modules.
 
 ## Instructions for Agents
 
