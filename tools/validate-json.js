@@ -181,6 +181,8 @@ async function validateFile( filePath ) {
 			console.error(
 				`${ filePath }: ❌ Error parsing JSON: ${ error.message }`
 			);
+		} else {
+			console.error( ` ❌ Unknown JSON parsing error:`, error );
 		}
 		return false;
 	}
@@ -213,7 +215,7 @@ async function validateFile( filePath ) {
 					` ❌ Error validating ${ filePath }: ${ error.message }`
 				);
 			} else {
-				console.error( ` ❌ Unknown Ajv error` );
+				console.error( ` ❌ Unknown Ajv error:`, error );
 			}
 			return false;
 		}
