@@ -137,11 +137,9 @@ async function validateFile( filePath ) {
 		if ( stats.size > maxBlueprintSizeKB * 1024 ) {
 			const sizeKB = stats.size / 1024;
 			console.error(
-				`Error: ${ filePath } is too large (${ sizeKB.toFixed(
+				`${ filePath }: Blueprint is too large at (${ sizeKB.toFixed(
 					2
-				) } KB, ${
-					stats.size
-				} bytes). Max allowed is ${ maxBlueprintSizeKB } KB.`
+				) } KB). Max allowed is ${ maxBlueprintSizeKB } KB. ❌`
 			);
 			return false;
 		}
@@ -155,7 +153,7 @@ async function validateFile( filePath ) {
 	} catch ( error ) {
 		if ( error instanceof Error ) {
 			console.error(
-				`Error parsing JSON in ${ filePath }: ${ error.message }`
+				`${ filePath }: ❌ Error parsing JSON: ${ error.message }`
 			);
 		}
 		return false;
@@ -163,7 +161,7 @@ async function validateFile( filePath ) {
 
 	if ( data.$schema ) {
 		console.log(
-			`Validating ${ filePath } against schema: ${ data.$schema }`
+			`${ filePath }: validating against schema: ${ data.$schema }`
 		);
 		try {
 			const draft = await getSchemaDraft( data.$schema );
@@ -174,27 +172,28 @@ async function validateFile( filePath ) {
 			const valid = validate( data );
 
 			if ( ! valid ) {
-				console.error( `Validation failed for ${ filePath }:` );
 				if ( validate.errors ) {
 					validate.errors.forEach( ( error ) => {
-						console.error(
-							`- ${ error.instancePath } ${ error.message }`
-						);
+						console.error( ' ❌ Error:', error );
 					} );
+				} else {
+					console.error( ` ❌ Unknown validation error` );
 				}
 				return false;
 			}
 		} catch ( error ) {
 			if ( error instanceof Error ) {
 				console.error(
-					`Error validating ${ filePath }: ${ error.message }`
+					` ❌ Error validating ${ filePath }: ${ error.message }`
 				);
+			} else {
+				console.error( ` ❌ Unknown Ajv error` );
 			}
 			return false;
 		}
 	} else {
 		console.log(
-			`No $schema property found in ${ filePath }; skipping schema validation (syntax only).`
+			`${ filePath }: Skipping schema validation since no $schema property found. Syntax validated only. ✅`
 		);
 	}
 
