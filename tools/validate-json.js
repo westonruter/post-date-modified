@@ -181,7 +181,10 @@ async function validateFile( filePath ) {
 				`${ filePath }: ❌ Error parsing JSON: ${ error.message }`
 			);
 		} else {
-			console.error( ` ❌ Unknown JSON parsing error:`, error );
+			console.error(
+				`${ filePath }: ❌ Unknown JSON parsing error:`,
+				error
+			);
 		}
 		return false;
 	}
