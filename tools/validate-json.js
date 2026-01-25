@@ -241,9 +241,17 @@ const patterns = args.length > 0 ? args : [ '**/*.json' ];
 		],
 	} );
 
-	if ( files.length === 0 && args.length > 0 ) {
-		console.error( 'No JSON files found matching the provided patterns.' );
-		process.exit( 1 );
+	if ( files.length === 0 ) {
+		if ( args.length > 0 ) {
+			console.error( 'No JSON files found matching the provided patterns.' );
+			process.exit( 1 );
+		} else {
+			console.warn(
+				'No JSON files found using the default pattern "**/*.json". ' +
+					'Ensure you are running this script from the repository root, or provide explicit glob patterns.'
+			);
+			return;
+		}
 	}
 
 	let hasError = false;
