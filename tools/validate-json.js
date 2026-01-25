@@ -135,7 +135,7 @@ async function getSchemaDraft( schemaUrl ) {
 	const schema = await fetchSchema( schemaUrl );
 	const draft = typeof schema.$schema === 'string' ? schema.$schema : '';
 	// Default to 'default' (modern Ajv) for other cases.
-	return draft.includes( '//json-schema.org/draft-04/schema' )
+	return /^http:\/\/json-schema\.org\/draft-04\/schema#?$/.test( draft )
 		? 'draft-04'
 		: 'default';
 }
