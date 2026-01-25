@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 /* eslint-disable no-console */
-/* eslint-disable @wordpress/no-setting-ds-tokens, @wordpress/no-unknown-ds-tokens */
 
 /**
  * External dependencies
