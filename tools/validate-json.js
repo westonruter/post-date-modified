@@ -115,7 +115,7 @@ async function fetchSchema( schemaUrl ) {
 			typeof schema.$schema !== 'string'
 		) {
 			throw new Error(
-				`Schema from ${ schemaUrl } is not an JSON Schema object.`
+				`Schema from ${ schemaUrl } is not a JSON Schema object.`
 			);
 		}
 		schemaCache.set( schemaUrl, schema );
