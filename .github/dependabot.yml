@@ -19,6 +19,11 @@ updates:
           wordpress-packages:
               patterns:
                   - '@wordpress/*'
+      ignore:
+          # WordPress packages peer-depend on @types/react ^18; React 19 types conflict.
+          - dependency-name: '@types/react'
+            update-types:
+                - version-update:semver-major
 
     - package-ecosystem: composer
       directory: '/'
