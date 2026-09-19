@@ -17,6 +17,7 @@
 		"@types/react": "^18.3.27",
 		"@types/wordpress__block-editor": "^15.0.6",
 		"@types/wordpress__blocks": "^15.17.0",
+		"@typescript/native": "npm:typescript@^7.0.2",
 		"@wordpress/block-editor": "^17.1.0",
 		"@wordpress/blocks": "^16.0.0",
 		"@wordpress/components": "^40.0.0",
@@ -33,7 +34,7 @@
 		"globals": "^17.12.0",
 		"husky": "^9",
 		"lint-staged": "^17",
-		"typescript": "^7"
+		"typescript": "npm:@typescript/typescript6@^6.0.2"
 	},
 	"scripts": {
 		"check-engines": "wp-scripts check-engines",
